@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Heartland" parallel="none">
+	<parameter name="browser" value="Chrome"></parameter>
+
+	<parameter name="device" value="Laptop"></parameter>
+
+	<parameter name="env" value="Dev2"></parameter>
+
+	<test name="Heartland Sanity Pack" parallel="none">
+
+		<classes>
+			<class name="com.ssp.TestRun.TestRun_Sandeep">
+			<!-- 	<methods>
+					<include name="test5"/>
+					<include name="test6"/>
+					
+				</methods> -->
+
+			</class>
+		</classes>
+	</test>
+</suite>
