@@ -279,6 +279,9 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
   
   @FindBy(css="#ctl00_cntMainBody_ClientSummaryCntrl_lblAccountBalance")
   WebElement txtAccountBalance;
+  
+  @FindBy(css="select#ctl00_cntMainBody_POLICYHEADER__BRANCH")
+  WebElement dropdownBranch;
 
   public ViewClientDetails(WebDriver driver, ExtentTest report) {
     this.driver = driver;
@@ -372,6 +375,8 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
     }
     UIInteraction.selectDropdownByIndex(dropdownBusinessType, "Business Type",
         testdata.get("Business Source"), driver, extentReport, false);
+    UIInteraction.selectDropdownByVisibleText(dropdownBranch, "Branch",
+        testdata.get("Branch"), driver, extentReport, false);
     UIInteraction.clickUsingJS(complianceDetailsTab, "Compliance Tab", driver, extentReport, true);
     UIInteraction.selectDropdownByVisibleText(dropdownCustomerCatrogry, "Customer Category",
         testdata.get("CustomerCategory"), driver, extentReport, false);

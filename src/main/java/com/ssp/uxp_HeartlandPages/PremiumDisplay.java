@@ -105,6 +105,9 @@ public class PremiumDisplay extends LoadableComponent<PremiumDisplay> {
   
   @FindBy(css = "#ctl00_cntMainBody_rblPaymentMethods_1")
   WebElement payNow;
+  
+  @FindBy(css = "#ctl00_cntMainBody_rblPaymentMethods_0")
+  WebElement invoice;
 
   
  public String riskTableDetails = "//*[@id='ctl00_cntMainBody_MultiRisk1_grdvRisk']//tr";
@@ -431,7 +434,7 @@ public class PremiumDisplay extends LoadableComponent<PremiumDisplay> {
     
       }
   /****
-   * Method to get table data
+   * Method to select Pay Now
    *  
    * @param locator
    * @param driver
@@ -443,6 +446,22 @@ public class PremiumDisplay extends LoadableComponent<PremiumDisplay> {
       throws Exception {
 
    UIInteraction.clickRadioButton(payNow, "click Paynow", driver, extentReport, false);
+  }
+  
+  /****
+   * Method to select invoice
+   *  
+   * @param locator
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   * @author Sandeep.sharma
+   */
+  public void selectInvoice(WebDriver driver, ExtentTest extentReport)
+      throws Exception {
+
+   UIInteraction.clickRadioButton(invoice, "click invoice", driver, extentReport, false);
+   
   }
 
 }

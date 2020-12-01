@@ -544,6 +544,9 @@ public class NewQuoteScreens extends LoadableComponent<NewQuoteScreens> {
       xpath = "//li[@aria-hidden='false']//div[@class=' panel panel-default panel-yellow nobgcolor ']//i/parent::div[contains(text(),'Added')]")
   WebElement txtAddedOnAddOn;
 
+  @FindBy(css = "#C1__QUE_D06B95BB3296F9AA126092_R1")
+  WebElement txtBrokerFee1stRowQotePanel;
+
   @FindBy(
       xpath = "//li[@aria-hidden='false']//div[@class=' panel panel-default panel-yellow nobgcolor ']//div//span[@class='addon-val'][1]")
   WebElement txtFirstAddOnAddedValue;
@@ -731,6 +734,7 @@ public class NewQuoteScreens extends LoadableComponent<NewQuoteScreens> {
 
   }
 
+  
   /****
    * Verify quotes page is loaded
    * 
@@ -1150,6 +1154,44 @@ public class NewQuoteScreens extends LoadableComponent<NewQuoteScreens> {
     WaitUtils.waitForSpinner(driver);
 
   }
+  
+  /****
+   * 
+   * update revised addon commission and SA commission on Edit Broker screen
+   * 
+   * @param testdata
+   * @param label
+   * @param screenshot
+   * @param extentReport
+   * @throws Exception
+   * @author Sandeep.Sharma
+   */
+  public void enterRemoveAddonDetailsOnEditBrokerAddOnScreen(WebDriver driver, ExtentTest extentReport,String revisedPremium,
+      String Commission, String SACommission,boolean SA) throws Exception {
+    
+    Actions action = new Actions(driver);
+    action.moveToElement(txtFieldRevisedPremium).doubleClick().build().perform();
+    WaitUtils.waitForElementPresent(driver, txtFieldRevisedPremium, "Element displayed");
+    txtFieldRevisedPremium.sendKeys(revisedPremium);
+    txtFieldRevisedPremium.sendKeys(Keys.TAB);
+    Thread.sleep(2000);
+    
+    fldCommissionAddOn.clear();
+    UIInteraction.sendKeys(fldCommissionAddOn, "AddOn Commission", Commission, driver, extentReport, false);  
+    fldCommissionAddOn.sendKeys(Keys.TAB);
+    Thread.sleep(2000);
+       
+    if(SA==true){
+      fldSACommAddOn.sendKeys(Keys.TAB);
+      fldSACommAddOn.clear();
+      Thread.sleep(4000);
+      UIInteraction.sendKeysViaActionClass(fldSACommAddOn, "SA Commission AddOn", SACommission,
+          driver, extentReport, false);
+      Thread.sleep(2000);
+      }
+    UIInteraction.clickUsingJS(btnSaveAddOn, "Save Button AddOn", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+  }
 
   /****
    * 
@@ -1381,7 +1423,8 @@ public class NewQuoteScreens extends LoadableComponent<NewQuoteScreens> {
   }
 
   public boolean removeAddOn(WebDriver driver) throws Exception {
-    WaitUtils.waitForElementPresent(driver, btnRemoveAddOn, "Element displayed");
+   // WaitUtils.waitForElementPresent(driver, btnRemoveAddOn, "Element displayed");
+    Thread.sleep(3000);
     UIInteraction.click(btnRemoveAddOn, "AddOn remove", driver, extentReport, false);
     Thread.sleep(2000);
     return true;
@@ -3022,5 +3065,20 @@ public class NewQuoteScreens extends LoadableComponent<NewQuoteScreens> {
     UIInteraction.click(btnSaveAndExit, "Save button", driver, extentReport, true);
   }
 
+
+
+/*****
+ * Get Broker Fee for selected quote
+  * @param driver
+ * @param extentReport
+ * @throws Exception
+ * @author Sandeep.Sharma
+ */
+public String getBrokerFeeFromSelectedQuotePanel(WebDriver driver,
+    ExtentTest extentReport) throws Exception {
+ String Bfee= UIInteraction.getText(txtBrokerFee1stRowQotePanel, "Broker Fee", driver, extentReport, false);
+  Thread.sleep(2000);
+  return Bfee;
 }
 
+}

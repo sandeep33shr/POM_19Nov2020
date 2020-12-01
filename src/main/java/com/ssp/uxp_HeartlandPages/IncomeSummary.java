@@ -61,6 +61,10 @@ public class IncomeSummary extends BaseTest {
       css = "#ctl00_cntMainBody_gvIncomeSummary_ctl02_IncomeSummaryBranchDetail1_ddlOfficeAccount")
   WebElement drpOfficeAccount;
 
+  @FindBy(
+      css = "#ctl00_cntMainBody_gvIncomeSummary_ctl02_IncomeSummaryBranchDetail1_GISLookup_MediaType")
+  WebElement drpMediaType;
+  
   @FindBy(css = "#ctl00_cntMainBody_btnProcess")
   WebElement btnProcess;
 
@@ -88,25 +92,40 @@ public class IncomeSummary extends BaseTest {
     }
   }
 
+  public void selectMediaTypedropdown(HashMap<String, String> testdata, WebDriver driver,
+      ExtentTest extentReport) {
+
+    try {
+      UIInteraction.selectDropdownByVisibleText(drpMediaType, "Select media type",
+          testdata.get("Media Type"), driver, extentReport, false);
+    
+    } catch (Exception e) {
+     
+      e.printStackTrace();
+    }
+  }
   public void clickProcessButton(WebDriver driver) {
 
     btnProcess.click();
     WaitUtils.waitForSpinner(driver);
   }
 
-  public void assertBankAccountsAmount(WebDriver driver, ExtentTest extentReport) {
+  public void assertBankAccountsAmount(HashMap<String,String> dynamicHashMap,WebDriver driver, ExtentTest extentReport) {
     String bankAmount = null;
     String officeAmount = null;
     boolean status = false;
+    System.out.println( dynamicHashMap.get("markedTotal"));
     try {
-      bankAmount = UIInteraction.getValue(lblBankAccountAmount, "Bank Account Amount", driver,
-          extentReport, true);
-      officeAmount = UIInteraction.getValue(lblOffcAccountAmount, "Office Account Amount", driver,
-          extentReport, true);
+      
+      bankAmount= UIInteraction.getText(lblBankAccountAmount, "Bank Account Amount", driver, extentReport, true);
+      officeAmount= UIInteraction.getText(lblOffcAccountAmount, "Office Account Amount", driver, extentReport, true);
+      
     } catch (Exception e) {
 
       e.printStackTrace();
+      
     }
+    
     String markedTotal = dynamicHashMap.get("markedTotal");
     if (Double.parseDouble(markedTotal) > 0) {
 
@@ -124,20 +143,24 @@ public class IncomeSummary extends BaseTest {
       Log.softAssertThat(status, "Office Account amount is appering correctly with correct sign",
           "Office Account amount is not appering correctly with correct sign", driver, extentReport,
           true);
-    } else {
-      if (Double.parseDouble(markedTotal) == Double.parseDouble(bankAmount)) {
-        status = true;
-      } else
-        status = false;
-      Log.softAssertThat(status, "Bank Account amount is appering correctly with correct sign",
-          "Bank Account amount is not appering correctly with correct sign", driver, extentReport,
-          true);
-      if (Double.parseDouble(markedTotal) == (Double.parseDouble(officeAmount)) * (-1)) {
+    }
+    
+    else {
+      System.out.println(Double.parseDouble(markedTotal)+"==="+Double.parseDouble(officeAmount));
+      if (Double.parseDouble(markedTotal) == Double.parseDouble(officeAmount)) {
         status = true;
       } else
         status = false;
       Log.softAssertThat(status, "Office Account amount is appering correctly with correct sign",
           "Office Account amount is not appering correctly with correct sign", driver, extentReport,
+          true);
+      System.out.println((Double.parseDouble(markedTotal)*(-1))+"==="+Double.parseDouble(bankAmount));
+      if ((Double.parseDouble(bankAmount)==Double.parseDouble(markedTotal) *(-1))) {
+        status = true;
+      } else
+        status = false;
+      Log.softAssertThat(status, "Bank Account amount is appering correctly with correct sign",
+          "Bank Account amount is not appering correctly with correct sign", driver, extentReport,
           true);
     }
 

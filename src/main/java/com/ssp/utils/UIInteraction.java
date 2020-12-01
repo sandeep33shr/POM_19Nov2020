@@ -5,6 +5,7 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -440,6 +441,8 @@ public class UIInteraction {
 
   }
 
+ 
+ 
   /****
    * 
    * To switch to the document opened
@@ -1080,9 +1083,33 @@ public class UIInteraction {
     for(int i=0;i<chkBoxes.size();i++){
       List<WebElement> chkBoxes1 = driver.findElements(By.xpath(docRefChkbox));      
       UIInteraction.clickUsingJS(chkBoxes1.get(i), "Clicking", driver, extentReport, false);
-      Thread.sleep(3000);
+      Thread.sleep(4000);
       
     }
+    
+  }
+  
+  public static void selectValAutoSuggestionList(WebElement FieldSmartSearch, List<WebElement> suggestionList,String enterTxt,String tobeSelectedTxt,WebDriver driver, ExtentTest extentReport){
+    
+      
+    try {
+      UIInteraction.sendKeys(FieldSmartSearch, "Enter value in search", enterTxt, driver, extentReport, false);
+      WaitUtils.waitForSpinner(driver);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    System.out.println(suggestionList.size()+"--");
+   
+    for(WebElement ele:suggestionList){
+      System.out.println(ele.getText());
+      if(ele.getText().trim().contains(tobeSelectedTxt)){
+        ele.click();
+        WaitUtils.waitForSpinner(driver);
+        break;
+      }
+    }
+    
     
   }
 

@@ -1,20 +1,13 @@
 package com.ssp.uxp_HeartlandPages;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Interaction;
-import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.ssp.support.BaseTest;
@@ -22,7 +15,6 @@ import com.ssp.support.Log;
 import com.ssp.utils.UIInteraction;
 import com.ssp.utils.WaitUtils;
 import com.ssp.utils.heartland.Interactions;
-import com.sun.webkit.Utilities;
 
 
 public class Banking extends BaseTest {
@@ -30,7 +22,7 @@ public class Banking extends BaseTest {
   public WebDriver driver;
   public ExtentTest extentReport;
   public WebElement element;
-  public HashMap<String, String> dynamicHashMap;
+  public HashMap<String, String> dynamicHashMap = new HashMap<>();
 
 
   public Banking(WebDriver driver) {
@@ -112,6 +104,9 @@ public class Banking extends BaseTest {
 
   @FindBy(css = "#ctl00_cntMainBody_grdvPreBank td:nth-child(6)")
   List<WebElement> clmTransRef;
+  
+  @FindBy(css = "#ctl00_cntMainBody_grdvPreBank td:nth-child(4)")
+  List<WebElement> clmAccountCode;
 
   @FindBy(css = "#ctl00_cntMainBody_txtTotalMarked")
   WebElement fldMarkedTotal;
@@ -137,6 +132,22 @@ public class Banking extends BaseTest {
   @FindBy(css = "#ctl00_cntMainBody_grdvPreBank_ctl02_chkMarked")
   WebElement chk1stItem;
 
+  @FindBy(css = "#ctl00_cntMainBody_grdvPreBank tr:nth-child(1)  td:nth-child(6)")
+  WebElement transRef1stRow;
+  
+  @FindBy(css = "#ctl00_cntMainBody_grdvPreBank tr:nth-child(2)  td:nth-child(6)")
+  WebElement transRef2ndRow;
+  
+  @FindBy(css = "#ctl00_cntMainBody_ClientSearch_txtSearch")
+  WebElement txtClientSmartSearch;
+  
+  @FindBy(css = "#ctl00_cntMainBody_ClientSearch_btnClear")
+  WebElement btnCrossClientSmartSearch;
+  
+  @FindBy(css = "li.ui-menu-item>a")
+  List<WebElement> listSmartSearch;
+  
+  
   public void selectBank(HashMap<String, String> testdata, WebDriver driver,
       ExtentTest extentReport) {
     try {
@@ -197,6 +208,23 @@ public class Banking extends BaseTest {
       e1.printStackTrace();
     }
 
+
+  }
+  
+  public void assertReportTrigger(WebDriver driver, ExtentTest extentReport) {
+    
+   boolean status=false;
+    try {
+      UIInteraction.click(btnReport, "Report Button", driver, extentReport, false);
+      WaitUtils.waitForSpinner(driver);
+      UIInteraction.closeCurrentTab(driver);
+      status=verifyBankingTitle(driver, extentReport);
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+
+    Log.softAssertThat(status, "Report triggered and closed sucessfully", "Report is not triggered", driver, extentReport, false);
 
   }
 
@@ -698,7 +726,10 @@ public class Banking extends BaseTest {
         "Amount on Collection/Payment details screen matches with Marked Total amount of Banking screen",
         "Amount on Collection/Payment details screen does not matches with Marked Total amount of Banking screen",
         driver, extentReport, false);
-
+    cs.bankDisabledFieldsOnCollection(driver, extentReport);
+    
+    status=cs.checkUnavailabilityOfPreBank(driver, extentReport);
+    Log.softAssertThat(status, "PreBank is not available under Bank dropdown", "PreBank is available under Bank dropdown", driver, extentReport, false);
     cs.cancelScreen(driver, extentReport);
 
 
@@ -776,7 +807,160 @@ public class Banking extends BaseTest {
         extentReport, false);
 
   }
+  
+  public void checkBankingProcess(HashMap<String,String> dynamicHashMap,HashMap<String,String> testData,WebDriver driver, ExtentTest extentReport){
+    
+    String ref=null;
+    List<String> references = new ArrayList<String>() ;
+    String ref1 =null;
+    String ref2 =null;
+    String markedTotal=null;
+       
+    if (btnUnmarkAll.getAttribute("disabled") == null) {
+      btnUnmarkAll.click();
+    }
+    
+    for (int i=0;i<2;i++){
+      
+       ref = clmTransRef.get(i).getText();
+       references.add(ref);
+          
+    }  
+    
+if(references.get(0).contains("(J)")){
+  ref1 = references.get(0).replace("(J)", "");
+}else ref1 =references.get(0);
+dynamicHashMap.put("ref1", ref1);
+if(references.get(1).contains("(J)")){
+  ref2 = references.get(1).replace("(J)", "");
+}else ref2 =references.get(1);
+dynamicHashMap.put("ref2", ref2);
+WaitUtils.waitForSpinner(driver);
 
+
+try {
+  String chk1 = "//table//td[contains(text(),'".concat(ref1)
+      .concat("')]/preceding-sibling::td//input[@type='checkbox']");
+  
+  WebElement ele1 = driver.findElement(By.xpath(chk1));
+  UIInteraction.clickUsingJS(ele1, "clicking chk1", driver, extentReport, false);
+  WaitUtils.waitForSpinner(driver);
+  
+  String chk2 = "//table//td[contains(text(),'".concat(ref2)
+      .concat("')]/preceding-sibling::td//input[@type='checkbox']");
+
+      WebElement ele2 = driver.findElement(By.xpath(chk2));
+  
+  UIInteraction.clickUsingJS(ele2, "clicking chk2", driver, extentReport, false);
+  WaitUtils.waitForSpinner(driver);
+  markedTotal=Double.toString(Double.parseDouble(UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, true)));
+  
+  
+  System.out.println(markedTotal);
+  dynamicHashMap.put("markedTotal", markedTotal);
+  UIInteraction.click(btnBank, "Click Bank", driver, extentReport, false);
+  WaitUtils.waitForSpinner(driver);
+  CollectionScreen cs= new CollectionScreen(driver, extentReport);
+  cs.enterDetailsForPayNow(testData, driver, extentReport, false);
+  
+  HomePage homepage = new HomePage(driver, extentReport);
+  homepage.navigateToTransaction(driver, extentReport);
+  TransactionScreen searchPage = new TransactionScreen(driver, extentReport).get();
+  searchPage.uncheckOutstandingCheckBox(driver, extentReport);
+  searchPage.navigateToTransactionsTab(driver, extentReport);
+  searchPage.searchViaTransactionRef(dynamicHashMap.get("ref1"), driver, extentReport);
+  searchPage.performSearch(driver, extentReport);
+  searchPage.selectActionMenu(driver, dynamicHashMap.get("ref1"), extentReport);
+  searchPage.viewAllocation(driver, extentReport);
+  searchPage.switchToFrameCTV(driver, extentReport);
+  String tRef= searchPage.getTransactionRefBasedOnProcessedBankingRecords(dynamicHashMap, driver, extentReport);
+  searchPage.closeViewAllocationcreen(driver, extentReport);
+  searchPage.switchOutOfFrame(driver, extentReport);
+  searchPage.newSearch(driver, extentReport);
+  searchPage.uncheckOutstandingCheckBox(driver, extentReport);
+  searchPage.navigateToTransactionsTab(driver, extentReport);
+  searchPage.searchViaTransactionRef(tRef, driver, extentReport);
+  searchPage.performSearch(driver, extentReport);
+  searchPage.assertAccountCode("CBA", driver, extentReport);  
+  
+} catch (Exception e) {
+  // TODO Auto-generated catch block
+  e.printStackTrace();
+}
+
+  }
+
+  public void smartSearch(HashMap<String,String> testData,WebDriver driver, ExtentTest extentReport){
+    
+    if (btnUnmarkAll.getAttribute("disabled") == null) {
+      try {
+        UIInteraction.click(btnUnmarkAll, "click unmark All button", driver, extentReport, true);
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      WaitUtils.waitForSpinner(driver);
+    }
+    
+  UIInteraction.selectValAutoSuggestionList(txtClientSmartSearch, listSmartSearch, testData.get("SmartSearch"), testData.get("Client Code"), driver, extentReport);
+  int i = -1;
+  boolean status = false;
+  double markedTotal1=0.00;
+  double markedTotal2=0.00;
+  
+
+    do {
+      for (WebElement element : clmAccountCode) {
+       if (!element.getText().equalsIgnoreCase(testData.get("Client Code"))) {
+          status = false;
+        } else
+          status = true;
+              }
+      i++;
+      if (i < linkPages.size()) {
+        linkPages.get(i).click();
+        WaitUtils.waitForSpinner(driver);
+
+      }
+    } while (i < linkPages.size());
+  
+  Log.softAssertThat(status, "All records are as per selected Smart Search",
+      "All records in grid are not as per selected Smart Search filter",driver,extentReport,false);
+  
+  try {
+    UIInteraction.click(btnMarkAll, "clicking MarkAll", driver, extentReport, true);
+    WaitUtils.waitForSpinner(driver);
+    markedTotal1 = Double.parseDouble(
+        UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, false));
+    UIInteraction.click(btnCrossClientSmartSearch, "clearing smart search filter", driver, extentReport, true);
+    WaitUtils.waitForSpinner(driver);
+    markedTotal2 = Double.parseDouble(
+        UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, false));
+    
+  } catch (Exception e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+  
+  if(markedTotal1==markedTotal2){
+    status =true;
+  }else status=false;
+  
+  Log.softAssertThat(status, "On clearing smart search filter ,marked total remain same as earlier", "On clearing smart search filter ,marked total doesn't remain same as earlier", driver, extentReport, true);
+  try {
+    UIInteraction.click(btnFilter, "clicking filter button", driver, extentReport, false);
+    UIInteraction.selectDropdownByVisibleText(drpMarkedStatus, "Marked Status", "All",
+        driver, extentReport, false);
+    UIInteraction.click(btnFind, "click find button", driver, extentReport, true);
+    WaitUtils.waitForSpinner(driver);
+    UIInteraction.click(btnUnmarkAll, "click unmark All button", driver, extentReport, true);
+  } catch (Exception e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+  WaitUtils.waitForSpinner(driver);
+      
+  }
 }
 
 

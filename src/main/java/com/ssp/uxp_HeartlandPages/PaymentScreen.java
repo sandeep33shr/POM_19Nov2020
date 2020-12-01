@@ -1,10 +1,12 @@
 package com.ssp.uxp_HeartlandPages;
 
 import java.util.HashMap;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Interaction;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -16,19 +18,23 @@ import com.ssp.support.Log;
 import com.ssp.utils.ElementLayer;
 import com.ssp.utils.UIInteraction;
 import com.ssp.utils.WaitUtils;
+import com.ssp.utils.heartland.Interactions;
 
 public class PaymentScreen extends LoadableComponent<PaymentScreen> {
 
   private final WebDriver driver;
   private ExtentTest extentReport;
   private boolean isPageLoaded;
-  
+
 
   @FindBy(css = "#ctl00_cntMainBody_btnAccount")
   WebElement btnFindAccount;
 
   @FindBy(css = "#ctl01_cntMainBody_txtName")
   WebElement fldAccountName;
+  
+  @FindBy(css = "#ctl01_cntMainBody_txtShortName")
+  WebElement fldAccountCode;
 
   @FindBy(css = "#ctl01_cntMainBody_btnFindNow")
   WebElement btnFindNow;
@@ -41,34 +47,58 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
 
   @FindBy(css = "iframe[name='TB_iframeContent']")
   WebElement frame_TB;
-  
- @FindBy(xpath = "//h1[contains(text(),'Payments')]")
+
+  @FindBy(xpath = "//h1[contains(text(),'Payments')]")
   WebElement headerPayments;
 
   @FindBy(xpath = "//*[contains(text(),'Payment - Select Account')]")
   WebElement headerAccountSearch;
- 
-  @FindBy(css="#ctl00_cntMainBody_btnFindNow")
+
+  @FindBy(css = "#ctl00_cntMainBody_btnFindNow")
   WebElement btnFindPayments;
-  
-  @FindBy(css="#ctl00_cntMainBody_btnPay")
+
+  @FindBy(css = "#ctl00_cntMainBody_btnPay")
   WebElement btnPay;
 
-  @FindBy(xpath="//*[contains(text(),'Payment Details')]")
+  @FindBy(xpath = "//*[contains(text(),'Payment Details')]")
   WebElement headerPaymentDetails;
-  
-  @FindBy(css="#ctl00_cntMainBody_PayNow_CollectionItem_GISLookup_MediaType")
+
+  @FindBy(css = "#ctl00_cntMainBody_PayNow_CollectionItem_GISLookup_MediaType")
   WebElement dropdownMediaType;
-  
-  @FindBy(css="#ctl00_cntMainBody_PayNow_CollectionItem_btnOk")
+
+  @FindBy(css = "#ctl00_cntMainBody_PayNow_CollectionItem_btnOk")
   WebElement btnOkPaymentDetails;
-  
-  @FindBy(css="#ctl00_cntMainBody_confirmYNC_btnYes")
+
+  @FindBy(css = "#ctl00_cntMainBody_confirmYNC_btnYes")
   WebElement btnConfirmWarningYes;
+
+  @FindBy(css = "a#ctl00_cntMainBody_grdvResultInsurerPayments_ctl06_lnkbutAdjustComm")
+  WebElement lnkCommAdj;
+
+  @FindBy(css = "#ctl01_cntMainBody_txtCommissionC")
+  WebElement fldCurrentComm_CommAdj;
+
+  @FindBy(css = "#ctl01_cntMainBody_txtCommissionA")
+  WebElement fldAdjustedComm_CommAdj;
+
+  @FindBy(css = "#ctl01_cntMainBody_btnOk")
+  WebElement btnOK_CommAdj;
+
+  @FindBy(css = "#ctl00_cntMainBody_ddlBranch")
+  WebElement drpBranch;
+
+  @FindBy(css = "#ctl00_cntMainBody_PaymentAllocation_ddlBranch")
+  WebElement drpBranchClientSAPayments;
   
-  public PaymentScreen(WebDriver driver,ExtentTest report) {
+  @FindBy(css = "#ctl00_cntMainBody_PaymentAllocation_btnOk")
+  WebElement btnOKClientSAPayments;
+  
+  @FindBy(css = "#ctl00_cntMainBody_PaymentAllocation_confirmYNC_btnYes")
+  WebElement btnConfirmWarningYesClientSAPayments;
+  
+  public PaymentScreen(WebDriver driver, ExtentTest report) {
     this.driver = driver;
-    this.extentReport= report;
+    this.extentReport = report;
     PageFactory.initElements(driver, this);
   }
 
@@ -78,7 +108,7 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
       Assert.fail();
     }
 
-  new ElementLayer(driver);
+    new ElementLayer(driver);
   }
 
   @Override
@@ -118,14 +148,14 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
       throw new Exception("Payments Screen is not loaded");
     return true;
   }
-  
-  public boolean verifyPaymentDetails() throws Exception{
+
+  public boolean verifyPaymentDetails() throws Exception {
     WaitUtils.waitForSpinner(driver);
     if (!WaitUtils.waitForElement(driver, headerPaymentDetails))
       throw new Exception("Payments Details is not loaded");
     return true;
   }
- 
+
   /****
    * 
    * To searchInsurer
@@ -136,8 +166,8 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
    * @param extentReport
    * @throws Exception
    */
-  public void searchInsurer(HashMap<String, String> dynamicHashMap,
-      WebDriver driver, ExtentTest extentReport) throws Exception {
+  public void searchInsurer(HashMap<String, String> dynamicHashMap, WebDriver driver,
+      ExtentTest extentReport) throws Exception {
     UIInteraction.click(btnFindAccount, "Find Account", driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
     driver.switchTo().frame(frame_TB);
@@ -148,10 +178,10 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
     WaitUtils.waitForSpinner(driver);
     UIInteraction.click(btnSelectAccount, "Select Account", driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
-    driver.switchTo().defaultContent();    
-   
+    driver.switchTo().defaultContent();
+
   }
-  
+
   /****
    * 
    * To search Addon Insurer
@@ -162,21 +192,47 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
    * @param extentReport
    * @throws Exception
    */
-  public void searchInsurerByName(String insurerName,
-      WebDriver driver, ExtentTest extentReport) throws Exception {
+  public void searchInsurerByName(String insurerName, WebDriver driver, ExtentTest extentReport)
+      throws Exception {
     UIInteraction.click(btnFindAccount, "Find Account", driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
     driver.switchTo().frame(frame_TB);
     Log.message("Switched in Iframe");
-    UIInteraction.sendKeys(fldAccountName,  "Account Name", insurerName, driver, extentReport, false);
+    UIInteraction.sendKeys(fldAccountName, "Account Name", insurerName, driver, extentReport,
+        false);
     UIInteraction.click(btnFindNow, "Find Now", driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
     UIInteraction.click(btnSelectAccount, "Select Account", driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
-    driver.switchTo().defaultContent();    
-   
+    driver.switchTo().defaultContent();
+
   }
 
+  /****
+   * 
+   * To search client or SA by code for payment
+   * 
+   * @param testdata
+   * @param quotesResult
+   * @param screenshot
+   * @param extentReport
+   * @throws Exception
+   */
+  public void searchByCode(String accountCode, WebDriver driver, ExtentTest extentReport)
+      throws Exception {
+    UIInteraction.click(btnFindAccount, "Find Account", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    driver.switchTo().frame(frame_TB);
+    Log.message("Switched in Iframe");
+    UIInteraction.sendKeys(fldAccountCode, "Account Code", accountCode, driver, extentReport,
+        false);
+    UIInteraction.click(btnFindNow, "Find Now", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    UIInteraction.click(btnSelectAccount, "Select Account", driver, extentReport, true);
+    WaitUtils.waitForSpinner(driver);
+    driver.switchTo().defaultContent();
+
+  }
   /****
    * To mark the transaction
    * 
@@ -187,7 +243,7 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
    */
   public void markTransction(HashMap<String, String> dynamicHashMap, WebDriver driver,
       ExtentTest extentReport) throws Exception {
-    
+
     UIInteraction.click(btnFindPayments, "Find button", driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
     UIInteraction.selectPolicyCheckbox(dynamicHashMap.get("policyNo"), driver, extentReport, true);
@@ -196,36 +252,73 @@ public class PaymentScreen extends LoadableComponent<PaymentScreen> {
     WaitUtils.waitForSpinner(driver);
     UIInteraction.click(btnConfirmWarningYes, "Confirm Yes", driver, extentReport, true);
   }
-  
+
   /****
-   * To mark the transaction when client is fully settled
+   * To mark and pay the transaction with Commission Adjustment
    * 
    * @param quotesData
    * @param screenshot
+   * @param reference - policy reference or document reference
    * @param extentReport
-   * @throws Exception
-   * author Sandeep.Sharma
+   * @throws clientFullySettled -if insurer/client is fully settle then it will skip funding message author
+   *         Sandeep.Sharma
    */
-  public void markTransctionWhenClientFullySettled(HashMap<String, String> dynamicHashMap, WebDriver driver,
-      ExtentTest extentReport,boolean clientFullySettled) throws Exception {
+  public void markAndPayTransaction(HashMap<String, String> testData,String reference, WebDriver driver, ExtentTest extentReport,
+      boolean clientFullySettled, boolean commAdj,boolean clientSAPayment,boolean insurerFullySettledClientSAPayment) throws Exception {
     
-    UIInteraction.click(btnFindPayments, "Find button", driver, extentReport, true);
+    boolean status=false;    
+   
+    if(clientSAPayment==true){
+      UIInteraction.selectDropdownByVisibleText(drpBranchClientSAPayments, "Branch", testData.get("Branch"), driver, extentReport, false);
+    }else{
+      UIInteraction.selectDropdownByVisibleText(drpBranch, "Branch", testData.get("Branch"), driver, extentReport, false);
+      UIInteraction.click(btnFindPayments, "Find button", driver, extentReport, true);
+      WaitUtils.waitForSpinner(driver);
+    }
+   
+    UIInteraction.selectPolicyCheckbox(reference, driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
-    UIInteraction.selectPolicyCheckbox(dynamicHashMap.get("policyNo"), driver, extentReport, true);
-    WaitUtils.waitForSpinner(driver);
-    UIInteraction.click(btnPay, "Pay button", driver, extentReport, clientFullySettled);
-    if(clientFullySettled==false){
+
+    if (commAdj == true) {
+      UIInteraction.selectActionMenu(reference, driver, extentReport, false); 
+      UIInteraction.clickUsingJS(lnkCommAdj, "Commission Adjustment", driver, extentReport, true);
+      WaitUtils.waitForSpinner(driver);
+      driver.switchTo().frame(frame_TB);  
+      String newComm=Interactions.getHalfOfAmountValue(UIInteraction
+          .getValue(fldCurrentComm_CommAdj, "Current Commission", driver, extentReport, false));
+      UIInteraction.sendKeys(fldAdjustedComm_CommAdj, "New Commission", newComm, driver, extentReport, true);   
+      fldAdjustedComm_CommAdj.sendKeys(Keys.TAB);
+      WaitUtils.waitForSpinner(driver);
+      UIInteraction.click(btnOK_CommAdj, "OK button", driver, extentReport, true);
+      WaitUtils.waitForSpinner(driver);
+       }
+if(clientSAPayment==true){
+  UIInteraction.click(btnOKClientSAPayments, "OK button", driver, extentReport, clientFullySettled);
+}else{
+  UIInteraction.click(btnPay, "Pay button", driver, extentReport, clientFullySettled);
+}
+   
+    Log.message("Transaction Marked sucessfully and user navigated to Payment Details screen", extentReport);
+    if (clientFullySettled == false) {
       WaitUtils.waitForSpinner(driver);
       UIInteraction.click(btnConfirmWarningYes, "Confirm Yes", driver, extentReport, true);
     }
+    if(insurerFullySettledClientSAPayment==false){
+      WaitUtils.waitForSpinner(driver);
+      UIInteraction.click(btnConfirmWarningYesClientSAPayments, "Confirm Yes", driver, extentReport, true);
+    }
     
+   
   }
 
-  public void enterPaymentDetails(HashMap<String, String> testdata, WebDriver driver, ExtentTest extentReport) throws Exception{
-    
-    UIInteraction.selectDropdownByVisibleText(dropdownMediaType, "Media Type", testdata.get("Media Type"), driver, extentReport, false);
+  public void enterPaymentDetails(HashMap<String, String> testdata, WebDriver driver,
+      ExtentTest extentReport) throws Exception {
+
+    UIInteraction.selectDropdownByVisibleText(dropdownMediaType, "Media Type",
+        testdata.get("Media Type"), driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
-    UIInteraction.click(btnOkPaymentDetails, "OK button Payments Detail", driver, extentReport, true);
+    UIInteraction.click(btnOkPaymentDetails, "OK button Payments Detail", driver, extentReport,
+        true);
   }
 
 }

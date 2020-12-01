@@ -70,7 +70,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
   @FindBy(css = "#ctl00_cntMainBody_btnFindNow")
   public WebElement btnFind;
 
-  @FindBy(css = "#ctl00_cntMainBody_btnNewsearch")
+  @FindBy(css = "a#ctl00_cntMainBody_btnNewsearch")
   WebElement btnClear;
 
   @FindBy(xpath = "//a[contains(text(),'View')]")
@@ -113,12 +113,13 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
   @FindBy(css = "#ctl00_cntMainBody_txtNetIncome")
   WebElement txtNetIncome;
 
-/*  @FindBy(
-      css = "div.modal-header.bootstrap-dialog-draggable > div > div.bootstrap-dialog-close-button > button")
-  WebElement btnClose;*/
-  
-  @FindBy(
-      css = "#ctl00_cntMainBody_btnClose")
+  /*
+   * @FindBy( css =
+   * "div.modal-header.bootstrap-dialog-draggable > div > div.bootstrap-dialog-close-button > button"
+   * ) WebElement btnClose;
+   */
+
+  @FindBy(css = "#ctl00_cntMainBody_btnClose")
   WebElement btnClose;
 
   @FindBy(css = "#ctl00_cntMainBody_txtUnearnedCommission")
@@ -160,8 +161,9 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
   @FindBy(css = "#ctl00_cntMainBody_txtDisbursements")
   WebElement txtDisbursements;
-  
-  @FindBy(xpath = "//a[@title='Action Menu' and @aria-expanded='true']/..//a[contains(@id,'lblhypViewAllocation')]")
+
+  @FindBy(
+      xpath = "//a[@title='Action Menu' and @aria-expanded='true']/..//a[contains(@id,'lblhypViewAllocation')]")
   public WebElement linkViewAllocation;
 
   @FindBy(css = "#ctl00_cntMainBody_btnReverseAllocation")
@@ -178,7 +180,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
   @FindBy(css = "#ctl00_cntMainBody_txtUnearnedCommission")
   WebElement txtUnEarnedComission;
-  
+
   @FindBy(css = "#ctl00_cntMainBody_txtToClearCommission")
   WebElement txtToClearComission;
 
@@ -187,7 +189,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
   @FindBy(css = "#ctl00_cntMainBody_txtUnearnedFee")
   WebElement txtUnEarnedFee;
-  
+
   @FindBy(css = "#ctl00_cntMainBody_txtToClearFee")
   WebElement txtToClearFee;
 
@@ -206,20 +208,37 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
   @FindBy(css = "#ctl00_cntMainBody_CurrencyType")
   WebElement dropdownCurrency;
 
-  
-  @FindBy(xpath ="//*[@id='ctl00_cntMainBody_gvCredits']/table/tbody/tr/td[2]")
+
+  @FindBy(xpath = "//*[@id='ctl00_cntMainBody_gvCredits']/table/tbody/tr/td[2]")
   WebElement transactionSRPNo;
-  
-  @FindBy(css ="#ctl00_cntMainBody_btnClose")
+
+  @FindBy(css = "#ctl00_cntMainBody_btnClose")
   WebElement btnViewScreenClose;
-  
-  @FindBy(css ="#ctl00_cntMainBody_gvGetTransactiondetails tr:nth-child(1) td:nth-child(4)")
+
+  @FindBy(css = "#ctl00_cntMainBody_gvGetTransactiondetails tr:nth-child(1) td:nth-child(4)")
   WebElement transRefColValOfSearchTrans;
   
-  @FindBy(css ="#ctl00_cntMainBody_CommissionHistory")
+  @FindBy(css = "#ctl00_cntMainBody_gvGetTransactiondetails tr:nth-child(1) td:nth-child(3)")
+  WebElement accountCodeColValOfSearchTrans;
+  
+  @FindBy(css = "#ctl00_cntMainBody_gvGetTransactiondetails tr:nth-child(1) td:nth-child(11)")
+  WebElement outstandingAmount;
+
+  @FindBy(css = "#ctl00_cntMainBody_CommissionHistory")
   WebElement lnkCTVCommission;
 
+  @FindBy(css = "#ctl00_cntMainBody_gvDebit td:nth-child(1)")
+  List<WebElement> debitSectionTRef;
 
+  @FindBy(css = "#ctl00_cntMainBody_gvCredits td:nth-child(1)")
+  List<WebElement> creditSectionTRef;
+
+  @FindBy(css = "a#ctl00_cntMainBody_confirmYNC1_btnYes")
+  WebElement btnYesFundingWarning;
+
+  @FindBy(xpath = "/html/body/form/div[3]/div/div[1]/div/div/div[4]/a[1]")
+  WebElement btnYesReversalWarning;
+  
   public TransactionScreen(WebDriver driver, ExtentTest report) {
 
     this.driver = driver;
@@ -470,8 +489,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
           value =
               UIInteraction.getValue(txtUnEarnedFee, "UnEarned Fee", driver, extentReport, true);
         else if (label.equalsIgnoreCase("ToClear Fee"))
-          value =
-              UIInteraction.getValue(txtToClearFee, "ToClear Fee", driver, extentReport, true);
+          value = UIInteraction.getValue(txtToClearFee, "ToClear Fee", driver, extentReport, true);
         else if (label.equalsIgnoreCase("Earned Fee"))
           value = UIInteraction.getValue(txtEarnedFee, "Earned Fee", driver, extentReport, true);
         break;
@@ -517,7 +535,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
    * Switching to 'TB_iframeContent' frame on CTV screen
    * 
    * @param driver
-  
+   * 
    */
   public void switchToCTVScreen(WebDriver driver) {
     driver.switchTo().frame(frame_TB);
@@ -527,7 +545,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
   public void switchOutOfCTVScreen(WebDriver driver, ExtentTest extentReport) throws Exception {
     driver.switchTo().defaultContent();
-   // UIInteraction.click(btnClose, "Close CTV Screen", driver, extentReport, true);
+    // UIInteraction.click(btnClose, "Close CTV Screen", driver, extentReport, true);
   }
 
 
@@ -567,6 +585,30 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
     driver.switchTo().defaultContent();
     WaitUtils.waitForSpinner(driver);
   }
+  
+  /****
+   * To mark transaction and click on Un-Do button with reversal warning message on View Allocation Screen
+   * 
+   * @param quotesData
+   * @param screenshot
+   * @param extentReport
+   * @throws Exception
+   * @author Sandeep.Sharma
+   */
+  public void markTransactionAndClickOnUnDoButtonPostIncomeEarning(String reference, WebDriver driver,
+      ExtentTest extentReport,boolean isFunded) throws Exception {
+    UIInteraction.selectPolicyCheckbox(reference, driver, extentReport, true);
+    WaitUtils.waitForSpinner(driver);
+    UIInteraction.click(btnUndo, "UN-DO Button", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    if(isFunded==true){
+    UIInteraction.click(btnYesFundingWarning, "YES Button Funding Warning", driver, extentReport, true);
+    }
+    UIInteraction.click(btnYesReversalWarning, "YES Button Reversal Warning", driver, extentReport, true);
+    driver.switchTo().defaultContent();
+    WaitUtils.waitForSpinner(driver);
+  }
+
 
   /***
    * Getting half value of an amount
@@ -853,6 +895,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
 
   }
+
   /****
    * 
    * Click on Action menu
@@ -861,14 +904,13 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
    * @throws Exception
    * @author Sandeep.Sharma
    */
-  public void clickOnActionMenu(WebDriver driver, ExtentTest extentReport)
-      throws Exception {
+  public void clickOnActionMenu(WebDriver driver, ExtentTest extentReport) throws Exception {
 
 
     UIInteraction.click(actionMenuFor1stTran, "Click on Action Menu", driver, extentReport, true);
   }
 
-  
+
   /****
    * 
    * Click on UNDO transaction button
@@ -953,10 +995,11 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
   public boolean validateSimilarValuePresentInColumn(String input, WebDriver driver,
       ExtentTest extentReport) throws Exception {
 
-    boolean status=Interactions.validateSameValuePresentInPerticularColumn(columnNameType, input, driver);
-    return status; 
-    }
-  
+    boolean status =
+        Interactions.validateSameValuePresentInPerticularColumn(columnNameType, input, driver);
+    return status;
+  }
+
   /*****
    * 
    * to search the account code with SA and select that account.
@@ -968,46 +1011,50 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
    * @throws Exception
    * @author Bhavesh.KumarSingh
    */
-  public void searchAccountViaClientName(WebDriver driver, HashMap<String, String> testData,String thirdParty,
-      ExtentTest extentReport) throws Exception {
+  public void searchAccountViaClientName(WebDriver driver, HashMap<String, String> testData,
+      String thirdParty, ExtentTest extentReport) throws Exception {
     UIInteraction.click(btnFindAccount, "Find Account button", driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
     driver.switchTo().frame(frame_TB);
-    UIInteraction.sendKeys(fldAccountName, "Account Name", thirdParty, driver,
-        extentReport, false);
+    UIInteraction.sendKeys(fldAccountName, "Account Name", thirdParty, driver, extentReport, false);
     UIInteraction.click(btnFindNow, "Find now button", driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
     UIInteraction.click(btnSelectAccount, "Select Account", driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
     driver.switchTo().defaultContent();
   }
- 
+
   /***
    * This method is used to get credit transaction reference no on view allocation
+   * 
    * @param driver
    * @param extentReport
    * @author Bhavesh.KumarSingh
    */
-  public String getTransactionCreditTransReffNo(WebDriver driver, ExtentTest extentReport) throws Exception {
-    String transactionNo= UIInteraction.getText(transactionSRPNo, "Credit transaction no", driver, extentReport, true);
+  public String getTransactionCreditTransReffNo(WebDriver driver, ExtentTest extentReport)
+      throws Exception {
+    String transactionNo = UIInteraction.getText(transactionSRPNo, "Credit transaction no", driver,
+        extentReport, true);
     return transactionNo;
   }
-  
+
   /***
    * To switch out from frame
+   * 
    * @param testData
    * @param driver
    * @param extentReport
    * @return
    * @throws Exception
    * @author Bhavesh.KumarSingh
-   */ 
+   */
   public void closeViewAllocationcreen(WebDriver driver, ExtentTest extentReport) throws Exception {
-    UIInteraction.click(btnViewScreenClose, "Close view allocation screen", driver, extentReport, false);
+    UIInteraction.click(btnViewScreenClose, "Close view allocation screen", driver, extentReport,
+        false);
     driver.switchTo().defaultContent();
 
   }
-  
+
 
   /****
    * Method to search using transaction reference
@@ -1024,10 +1071,10 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
     UIInteraction.sendKeys(fldTransactionRef, "Transaction reference", reference, driver,
         extentReport, true);
   }
-  
+
 
   /****
-   * Method to search using transaction reference
+   * Method to get transaction reference
    * 
    * @param reference
    * @param driver
@@ -1035,12 +1082,38 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
    * @throws Exception
    * @author Sandeep.Sharma
    */
-  public String getTransactionRef(WebDriver driver, ExtentTest extentReport)
-      throws Exception {    
-   return  UIInteraction.getText(transRefColValOfSearchTrans, "get document ref", driver, extentReport, false);
+  public String getTransactionRef(WebDriver driver, ExtentTest extentReport) throws Exception {
+    return UIInteraction.getText(transRefColValOfSearchTrans, "get document ref", driver,
+        extentReport, false);
   }
 
+  /****
+   * Method to get Account code col val on search transaction
+   * 
+   * @param reference
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   * @author Sandeep.Sharma
+   */
+  public String getAccountCode(WebDriver driver, ExtentTest extentReport) throws Exception {
+    return UIInteraction.getText(accountCodeColValOfSearchTrans, "get Account code", driver,
+        extentReport, false);
+  }
 
+  /****
+   * Method to get O/S Amount val on search transaction
+   * 
+   * @param reference
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   * @author Sandeep.Sharma
+   */
+  public String getOustandingAmount(WebDriver driver, ExtentTest extentReport) throws Exception {
+    return UIInteraction.getText(outstandingAmount, "get o/s amount", driver,
+        extentReport, false);
+  }
   /*****
    * Method to navigate to transactions tab
    * 
@@ -1067,8 +1140,9 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
   }
 
   /*****
-   * Method to verify the options present in currency drop-down on Amounts tab
-   * and that only Pounds Sterling is available
+   * Method to verify the options present in currency drop-down on Amounts tab and that only Pounds
+   * Sterling is available
+   * 
    * @param text
    * @param driver
    * @param extentReport
@@ -1096,18 +1170,453 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
     return (count && status);
   }
 
-  public boolean checkCommissionHyperlinkAvailability(WebDriver driver2, ExtentTest extentReport2) {
-    
-    boolean status=false;
-    
-    if(lnkCTVCommission.isDisplayed()==true){
-      status=true;
-    }else status = false;
-  
+  /*****
+   * Method to verify income tab availability by checking commission hyperlink
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+  public boolean checkCommissionHyperlinkAvailability(WebDriver driver, ExtentTest extentReport) {
+
+    boolean status = false;
+
+    if (lnkCTVCommission.isDisplayed() == true) {
+      status = true;
+    } else
+      status = false;
+
     return status;
   }
+
+  /*****
+   * Method to verify values of Earned commission and Earned Fee
+   * 
+   * @param driver
+   * @param extentReport
+   * @afterUndo if true then it will check contra amount in to clear and earned field
+   * @author Sandeep.Sharma
+   */
+
+  public void assertFullyearnedIncome(HashMap<String, String> dynamicHashMap, WebDriver driver,
+      ExtentTest extentReport, boolean afterUndo) {
+
+    String earnedComm = null;
+    String unearnedComm = null;
+    String toClearComm = null;
+    String earnedFee = null;
+    String unearnedFee = null;
+    String toClearFee = null;
+    boolean status = false;
+    try {
+      earnedComm = traverseCTVScreen("Earned Commission", "Income", driver, extentReport);
+      unearnedComm = traverseCTVScreen("Unearned Commission", "Income", driver, extentReport);
+      toClearComm = traverseCTVScreen("Toclear Commission", "Income", driver, extentReport);
+      earnedFee = traverseCTVScreen("Earned Fee", "Income", driver, extentReport);
+      unearnedFee = traverseCTVScreen("Unearned Fee", "Income", driver, extentReport);
+      toClearFee = traverseCTVScreen("Toclear Fee", "Income", driver, extentReport);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    if (afterUndo == false) {
+
+      if (earnedComm.equals(dynamicHashMap.get("ToClearComm")) && unearnedComm.equals(dynamicHashMap.get("unearnedComm"))
+          && toClearComm.equals("0.00")) {
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Full Commission has been earned sucessfully",
+          "Commission has not been earned", driver, extentReport, true);
+
+      if (earnedFee.equals(dynamicHashMap.get("ToClearFee")) && unearnedFee.equals(dynamicHashMap.get("unearnedFee"))
+          && toClearFee.equals("0.00")) {
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Full Fee has been earned sucessfully", "Fee has not been earned",
+          driver, extentReport, true);
+    }
+
+    if (afterUndo == true) {
+      System.out.println((dynamicHashMap.get("ToClearComm")));
+      System.out.println(earnedComm);
+      System.out.println(unearnedComm);
+      System.out.println(toClearComm);
+      System.out.println("-"+earnedComm);
+      
+      
+      
+        if (earnedComm.equals(dynamicHashMap.get("ToClearComm"))
+          && unearnedComm.equals(earnedComm) && toClearComm.equals("-"+earnedComm)) {
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Full Commission has been reverted with contra",
+          "Commission has not been reverted with contra", driver, extentReport, true);     
+      
+
+      if (earnedFee.equals(dynamicHashMap.get("ToClearFee")) && unearnedFee.equals(earnedFee)
+          && toClearFee.equals("-"+earnedFee)) {
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Full Fee has been reverted with contra",
+          "Fee has not been reverted wtih contra", driver, extentReport, true);
+
+
+    }
+
+
+  }
+
+  /*****
+   * Method to verify values of Earned commission and Earned Fee with Client Pays earning basis
+   * 
+   * @param driver
+   * @param extentReport
+   * @afterUndo if true then it will check contra amount in to clear and earned field
+   * @author Sandeep.Sharma
+   */
+
+  public void assertFullyearnedIncomeClientPays(HashMap<String, Double> dynamicHashMapD, WebDriver driver,
+      ExtentTest extentReport, boolean afterUndo) {
+
+    double earnedCommVal = 0.00;
+    double unearnedCommVal = 0.00;
+    double toClearCommVal = 0.00;
+    double earnedFeeVal = 0.00;
+    double unearnedFeeVal = 0.00;
+    double toClearFeeVal = 0.00;
+    String earnedComm = null;
+    String unearnedComm = null;
+    String toClearComm = null;
+    String earnedFee = null;
+    String unearnedFee = null;
+    String toClearFee = null;
+    boolean status = false;
+    try {
+      earnedComm = traverseCTVScreen("Earned Commission", "Income", driver, extentReport);
+      unearnedComm = traverseCTVScreen("Unearned Commission", "Income", driver, extentReport);
+      toClearComm = traverseCTVScreen("Toclear Commission", "Income", driver, extentReport);
+      earnedFee = traverseCTVScreen("Earned Fee", "Income", driver, extentReport);
+      unearnedFee = traverseCTVScreen("Unearned Fee", "Income", driver, extentReport);
+      toClearFee = traverseCTVScreen("Toclear Fee", "Income", driver, extentReport);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    earnedCommVal=Double.parseDouble(earnedComm);
+    unearnedCommVal=Double.parseDouble(unearnedComm);
+    toClearCommVal=Double.parseDouble(toClearComm);
+    earnedFeeVal=Double.parseDouble(earnedFee);
+    unearnedFeeVal=Double.parseDouble(unearnedFee);
+    toClearFeeVal=Double.parseDouble(toClearFee);
+    
+    
+
+    if (afterUndo == false) {
+
+      if (unearnedCommVal==dynamicHashMapD.get("unearnedCommD") && toClearCommVal==0.00
+          && earnedCommVal==(dynamicHashMapD.get("ToClearCommD"))) {
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Commission has been earned sucessfully",
+          "Commission has not been earned", driver, extentReport, true);
+
+      if (earnedFeeVal==0.00 && toClearFeeVal==0.00
+          && unearnedFeeVal==(dynamicHashMapD.get("unearnedFeeD"))) {
+        status = true;
+      } else
+        status = false;
+      Log.softAssertThat(status, "Full Fee has been earned sucessfully", "Fee has not been earned",
+          driver, extentReport, true);
+    }
+
+    if (afterUndo == true) {     
+     
+        if (earnedCommVal==(dynamicHashMapD.get("ToClearCommD")) && toClearCommVal==(earnedCommVal*(-1)) && unearnedCommVal==(dynamicHashMapD.get("unearnedCommD"))+earnedCommVal){
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Full Commission has been reverted with contra",
+          "Commission has not been reverted with contra", driver, extentReport, true);     
+      
+
+      if (earnedFeeVal==0.00 && toClearFeeVal==0.00 && unearnedFeeVal==dynamicHashMapD.get("unearnedFeeD")){
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "Full Fee has been reverted with contra",
+          "Fee has not been reverted wtih contra", driver, extentReport, true);
+
+
+    }
+
+
+  }
+
+  /*****
+   * Method to verify values of Earned Fee with Client Pays earning basis
+   * 
+   * @param driver
+   * @param extentReport
+   * @afterUndo if true then it will check contra amount in to clear and earned field
+   * @author Sandeep.Sharma
+   */
+
+  public void assertFeeIncomePostUndoClientPays(HashMap<String, Double> dynamicHashMapD, WebDriver driver,
+      ExtentTest extentReport,boolean PostClearingReversal) {
+
+   
+    double earnedFeeVal = 0.00;
+    double unearnedFeeVal = 0.00;
+    double toClearFeeVal = 0.00;
   
- 
+    String earnedFee = null;
+    String unearnedFee = null;
+    String toClearFee = null;
+    boolean status = false;
+  
+         
+if(PostClearingReversal==false){
+  try {
+    earnedFee = traverseCTVScreen("Earned Fee", "Income", driver, extentReport);
+    unearnedFee = traverseCTVScreen("Unearned Fee", "Income", driver, extentReport);
+    toClearFee = traverseCTVScreen("Toclear Fee", "Income", driver, extentReport);
+  } catch (Exception e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+  earnedFeeVal=Double.parseDouble(earnedFee);
+  unearnedFeeVal=Double.parseDouble(unearnedFee);
+  toClearFeeVal=Double.parseDouble(toClearFee);
+
+     if (earnedFeeVal==dynamicHashMapD.get("partFeeD") && toClearFeeVal==(dynamicHashMapD.get("osAmountD")-dynamicHashMapD.get("partFeeD")) && unearnedFeeVal==dynamicHashMapD.get("partFeeD")){
+        status = true;
+      } else
+        status = false;
+
+      Log.softAssertThat(status, "part Fee has been reverted with contra",
+          "Part Fee has not been reverted wtih contra", driver, extentReport, true);
+}
+if(PostClearingReversal==true){
+  try {
+    earnedFee = traverseCTVScreen("Earned Fee", "Income", driver, extentReport);
+    unearnedFee = traverseCTVScreen("Unearned Fee", "Income", driver, extentReport);
+    toClearFee = traverseCTVScreen("Toclear Fee", "Income", driver, extentReport);
+  } catch (Exception e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+  earnedFeeVal=Double.parseDouble(earnedFee);
+  unearnedFeeVal=Double.parseDouble(unearnedFee);
+  toClearFeeVal=Double.parseDouble(toClearFee);
+  if(earnedFeeVal==dynamicHashMapD.get("osAmountD") && toClearFeeVal==0.00 && unearnedFeeVal==dynamicHashMapD.get("partFeeD")){
+  status = true;
+}else status = false;
+Log.softAssertThat(status, "Earned Fee has been reverted and toclear fee has been earned",
+    "Earned Fee has not been reverted", driver, extentReport, true);
 }
 
+  
+ }
 
+  
+  /*****
+   * Method to verify income fields after clearing reversal journals from income clearing
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+  public void assertIncomePostClearingReversals(HashMap<String, String> dynamicHashMap,
+      WebDriver driver, ExtentTest extentReport) {
+
+    String earnedComm = null;
+    String unearnedComm = null;
+    String toClearComm = null;
+    String earnedFee = null;
+    String unearnedFee = null;
+    String toClearFee = null;
+    boolean status = false;
+    try {
+      earnedComm = traverseCTVScreen("Earned Commission", "Income", driver, extentReport);
+      unearnedComm = traverseCTVScreen("Unearned Commission", "Income", driver, extentReport);
+      toClearComm = traverseCTVScreen("toClear Commission", "Income", driver, extentReport);
+      earnedFee = traverseCTVScreen("Earned Fee", "Income", driver, extentReport);
+      unearnedFee = traverseCTVScreen("Unearned Fee", "Income", driver, extentReport);
+      toClearFee = traverseCTVScreen("toClear Fee", "Income", driver, extentReport);
+    } catch (Exception e) {
+
+      e.printStackTrace();
+    }
+
+    if (earnedComm.equals("0.00") && unearnedComm.equals(dynamicHashMap.get("ToClearComm"))
+        && toClearComm.equals("0.00")) {
+      status = true;
+    } else
+      status = false;
+
+    Log.softAssertThat(status, "Full Commission has been reverted sucessfully",
+        "Commission has not been reverted", driver, extentReport, true);
+
+    if (earnedFee.equals("0.00") && unearnedFee.equals(dynamicHashMap.get("ToClearFee"))
+        && toClearFee.equals("0.00")) {
+      status = true;
+    } else
+      status = false;
+
+    Log.softAssertThat(status, "Full Fee has been reverted sucessfully",
+        "Fee has not been reverted", driver, extentReport, true);
+  }
+
+  public void assertIncomePostClearingReversalsClientPays(HashMap<String, Double> dynamicHashMapD,
+      WebDriver driver, ExtentTest extentReport) {
+
+    String earnedComm = null;
+    String unearnedComm = null;
+    String toClearComm = null;
+    String earnedFee = null;
+    String unearnedFee = null;
+    String toClearFee = null;
+    double earnedCommVal = 0.00;
+    double unearnedCommVal = 0.00;
+    double toClearCommVal = 0.00;
+    double earnedFeeVal = 0.00;
+    double unearnedFeeVal = 0.00;
+    double toClearFeeVal = 0.00;
+    boolean status = false;
+    try {
+      earnedComm = traverseCTVScreen("Earned Commission", "Income", driver, extentReport);
+      unearnedComm = traverseCTVScreen("Unearned Commission", "Income", driver, extentReport);
+      toClearComm = traverseCTVScreen("toClear Commission", "Income", driver, extentReport);
+      earnedFee = traverseCTVScreen("Earned Fee", "Income", driver, extentReport);
+      unearnedFee = traverseCTVScreen("Unearned Fee", "Income", driver, extentReport);
+      toClearFee = traverseCTVScreen("toClear Fee", "Income", driver, extentReport);
+    } catch (Exception e) {
+
+      e.printStackTrace();
+    }
+    earnedCommVal=Double.parseDouble(earnedComm);
+    unearnedCommVal=Double.parseDouble(unearnedComm);
+    toClearCommVal=Double.parseDouble(toClearComm);
+    earnedFeeVal=Double.parseDouble(earnedFee);
+    unearnedFeeVal=Double.parseDouble(unearnedFee);
+    toClearFeeVal=Double.parseDouble(toClearFee);
+
+    if (earnedCommVal==0.00 && toClearCommVal==0.00
+        && unearnedCommVal==(dynamicHashMapD.get("unearnedCommD")+(dynamicHashMapD.get("ToClearCommD")))) {
+      status = true;
+    } else
+      status = false;
+
+    Log.softAssertThat(status, "Full Commission has been reverted sucessfully",
+        "Commission has not been reverted", driver, extentReport, true);
+
+    if (earnedFeeVal==0.00 && toClearFeeVal==0.00
+        && unearnedFeeVal==(dynamicHashMapD.get("unearnedFeeD")+(dynamicHashMapD.get("ToClearFeeD")))) {
+      status = true;
+    } else
+      status = false;
+
+    Log.softAssertThat(status, "Full Fee has been reverted sucessfully",
+        "Fee has not been reverted", driver, extentReport, true);
+  }
+
+  /*****
+   * Method to get transaction from view allocation screen based on allocated amount
+   * 
+   * @amount based on this amount transaction ref will be returned
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+
+  public String getTransactionRefBasedOnProcessedBankingRecords(
+      HashMap<String, String> dynamicHashMap, WebDriver driver,
+      ExtentTest extentReport) {
+
+    String Reference = null;
+    String ref = null;
+
+    double markedAmount = Double.parseDouble(dynamicHashMap.get("markedTotal")) * (-1);
+    System.out.println(markedAmount);
+
+
+    if (markedAmount > 0) {
+      for (WebElement ele : debitSectionTRef) {
+        if (!ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref1"))
+            && !ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref2"))) {
+          ref = ele.getText();
+        }
+      }
+
+    } else {
+
+      for (WebElement ele : creditSectionTRef) {
+        if (!ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref1"))
+            && !ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref2"))) {
+          ref = ele.getText();
+        }
+
+      }
+
+    }
+    return ref;
+  }
+
+
+  /*****
+   * Method to clear search and preform new search
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+
+  public void newSearch(WebDriver driver, ExtentTest extentReport) {
+
+    try {
+      UIInteraction.click(btnClear, "click clear", driver, extentReport, false);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    WaitUtils.waitForSpinner(driver);
+  }
+
+  /*****
+   * Method to check if particular account is available or not
+   * 
+   * @param driver
+   * @param extentReport
+   * @param account
+   * @author Sandeep.Sharma
+   */
+
+  public void assertAccountCode(String account, WebDriver driver, ExtentTest extentReport) {
+
+    String accountcode = "//td[contains(text(),'".concat(account).concat("')]");
+    System.out.println(accountcode);
+    WebElement element = driver.findElement(By.xpath(accountcode));
+    boolean status = false;
+    if (element.getText().equalsIgnoreCase(account)) {
+      status = true;
+    } else
+      status = false;
+
+    Log.softAssertThat(status, "Transaction is posted in account -> " + account,
+        "Transaction is not posted in account -> " + account, driver, extentReport, true);
+
+  }
+
+}

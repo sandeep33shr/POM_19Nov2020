@@ -23,7 +23,9 @@ public class IncomeClearing extends BaseTest {
   public WebDriver driver;
   public ExtentTest extentReport;
   public WebElement element;
-  public HashMap<String,String> dynamicHashMap = new HashMap<>();
+  public HashMap<String, String> dynamicHashMap = new HashMap<>();
+  
+  
 
   public IncomeClearing(WebDriver driver) {
 
@@ -119,6 +121,7 @@ public class IncomeClearing extends BaseTest {
   
   public void clickProcessButton() {
     try {
+      
       if (btnProcess.getAttribute("disabled") == null) {
         UIInteraction.click(btnProcess, "Click Process button", driver, extentReport, false);
         WaitUtils.waitForSpinner(driver);
@@ -156,9 +159,9 @@ public class IncomeClearing extends BaseTest {
    }
  public void checkFeeChekbox(WebDriver driver, ExtentTest extentReport){
    
-   chkComm.click();
+   chkFEE.click();
    }
- public void assertMarkedValueWrtCTV(String docRef,String value,WebDriver driver, ExtentTest extentReport){
+ public void assertMarkedValueWrtCTV(HashMap<String,String> dynamicHashMap,String docRef,String value,WebDriver driver, ExtentTest extentReport){
    
    String markedTotal=null;
    boolean status=false;
@@ -166,13 +169,16 @@ public class IncomeClearing extends BaseTest {
    
    try {
     markedTotal=UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, false);
-  
+  WaitUtils.waitForSpinner(driver);
+    dynamicHashMap.put("markedTotal", markedTotal);
+    System.out.println(dynamicHashMap.get("markedTotal"));
     
   } catch (Exception e1) {
     // TODO Auto-generated catch block
     e1.printStackTrace();
   }
-   dynamicHashMap.put(markedTotal, markedTotal);
+     
+   
    if(markedTotal.equals(value)){
      status=true;
    }else status=false;
@@ -181,8 +187,7 @@ public class IncomeClearing extends BaseTest {
    String viewLink= "//td[contains(text(),'".concat(docRef).concat("')]/following-sibling::td/a");
    System.out.println(viewLink);
    WebElement view = driver.findElement(By.xpath(viewLink));
-   System.out.println("jb");
-   try {
+    try {
     UIInteraction.clickUsingJS(view, "Clicking", driver, extentReport, false);
   } catch (Exception e) {
     // TODO Auto-generated catch block
@@ -195,6 +200,7 @@ public class IncomeClearing extends BaseTest {
     status= searchPage.checkCommissionHyperlinkAvailability(driver, extentReport);
    try {
     searchPage.closeCTVScreen(driver, extentReport);
+    WaitUtils.waitForSpinner(driver);
     searchPage.switchOutOfCTVScreen(driver, extentReport);
   } catch (Exception e) {
     // TODO Auto-generated catch block

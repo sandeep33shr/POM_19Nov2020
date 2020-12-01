@@ -39,6 +39,7 @@ public class BaseTest {
   protected WebDriver driver = null;
   protected ExtentTest extentReport = null;
   protected HashMap<String, String> testData = new HashMap<>();
+  
 
   /****
    * Before suite will run always before the suite begins making it the first method in execution.

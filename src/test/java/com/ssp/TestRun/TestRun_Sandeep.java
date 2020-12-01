@@ -1,11 +1,14 @@
 package com.ssp.TestRun;
 
+import java.util.HashMap;
 import org.testng.annotations.Test;
 import com.ssp.Heartland.Test.TC_Banking_filtering_Marking;
 import com.ssp.Heartland.Test.TC_IncomeClearing_4644;
 import com.ssp.support.BaseTest;
 
 public class TestRun_Sandeep  extends BaseTest{
+  
+
   
 /*  @Test(groups="bank")
   public void test() throws Exception {
@@ -71,7 +74,7 @@ public class TestRun_Sandeep  extends BaseTest{
 /*  @Test(groups="bank")
   public void test10() throws Exception {
       
-    new TC_Banking_filtering_Marking().checkAvailabilityOfCollectionDetails(driver, extentReport);
+    new TC_Banking_filtering_Marking().checkAvailabilityOfCollectionDetailsAndReport(driver, extentReport);
      
  }*/
 /*  @Test(groups="bank")
@@ -81,10 +84,61 @@ public class TestRun_Sandeep  extends BaseTest{
      
  }*/
   
-    @Test(groups="IncomeClering")
-  public void test11() throws Exception {
+/*    @Test(groups="bank")
+  public void test12() throws Exception {
+      
+    new TC_Banking_filtering_Marking().checkBankingProcess(testData, driver, extentReport);
+     
+ }*/
+  
+/*  @Test(groups="bank")
+public void test13() throws Exception {
+    
+  new TC_Banking_filtering_Marking().checkSmartSearch(testData, driver, extentReport);
+   
+}*/
+  
+/*    @Test(groups="IncomeClering")
+  public void test1() throws Exception {
       
     new TC_IncomeClearing_4644().NBWithPayNowFullCollection(driver, testData, extentReport);
      
- }
+ }*/
+  
+/*    @Test(groups="IncomeClering")
+  public void test2() throws Exception {
+      
+    new TC_IncomeClearing_4644().AdditionalMTAWithNegativeAddon(driver, testData, extentReport);
+     
+ }*/
+    
+/*    @Test(groups="IncomeClering")
+    public void test3() throws Exception {
+        
+      new TC_IncomeClearing_4644().ReturnMTA(driver, testData, extentReport);
+       
+   }*/
+/*  
+      @Test(groups="IncomeClering")
+  public void test4() throws Exception {
+      
+    new TC_IncomeClearing_4644().NBWithPayNowFullCollection_ClientPays(driver, testData, extentReport);
+     
+ }*/
+  
+  
+/*  @Test(groups="IncomeClering")
+public void test4() throws Exception {
+  
+new TC_IncomeClearing_4644().NBWithPayNowPartCollection_ClientPays(driver, testData, extentReport);
+ 
+}*/
+  @Test(groups="IncomeClering")
+public void test5() throws Exception {
+  
+new TC_IncomeClearing_4644().ClientPaysCollection_FullCommPart_PartFee_FullFee(driver, testData, extentReport);
+ 
+}
+  
+
 }

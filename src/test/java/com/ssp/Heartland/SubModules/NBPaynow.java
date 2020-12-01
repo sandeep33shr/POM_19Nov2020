@@ -62,7 +62,7 @@ public class NBPaynow extends BaseTest {
                  premiumPage.selectPayNow(driver, extentReport);
                  String insurerName = premiumPage.getInsurerName(driver, extentReport);
                  dynamicHashMap.put("Insurer Name", insurerName);
-                 String AddOninsurerName = premiumPage.getInsurerName(driver, extentReport);
+                 String AddOninsurerName = premiumPage.getAddOnInsurerName(driver, extentReport);
                  dynamicHashMap.put("AddOn Insurer Name", AddOninsurerName);
                  premiumPage.confirmQuote(driver, extentReport);
                  CollectionScreen collecton = new CollectionScreen(driver, extentReport);

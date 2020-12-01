@@ -69,7 +69,6 @@ public class Interactions {
     return (twoDecimals.format(annualPremium));
 
   }
-
   /****
    * Method to calculate the Broker Commission
    * 
@@ -1274,6 +1273,9 @@ public class Interactions {
     }
     return sum;
   }
+  
+    
+  
 }
 
 

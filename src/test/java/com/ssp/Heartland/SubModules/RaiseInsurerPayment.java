@@ -10,6 +10,7 @@ import com.ssp.utils.DataUtils;
 import com.ssp.uxp_HeartlandPages.HomePage;
 import com.ssp.uxp_HeartlandPages.PaymentScreen;
 
+
 public class RaiseInsurerPayment extends BaseTest {
 
   @Override
@@ -55,10 +56,19 @@ public class RaiseInsurerPayment extends BaseTest {
     return status;
   }
   
-  // Author :Sandeep Sharma (pay Insurer method)
+  /****
+   * To mark and pay the transaction with Commission Adjustment
+   * 
+   * @param quotesData
+   * @param screenshot
+   * @param reference - policy reference or document reference
+   * @param extentReport
+   * @param clientFullySettled -if client is fully settle then it will skip funding message
+   * @param CommAdj - if true then it will reduce 50% Commission
+   * author Sandeep.Sharma*/
   
-  public void payInsurer(WebDriver driver,HashMap<String, String> testData,String insurerName,HashMap<String, String> dynamicHashMap,
-      ExtentTest extentReport,boolean clientFullySettled) throws Exception {
+  public void payInsurerWithCommAdj(WebDriver driver,String insurerName,HashMap<String, String> dynamicHashMap,HashMap<String, String> testData,
+      ExtentTest extentReport,boolean clientFullySettled,boolean CommAdj) throws Exception {
     boolean status = false;
     try {
       HomePage homePage = new HomePage(driver, extentReport).get();
@@ -73,14 +83,42 @@ public class RaiseInsurerPayment extends BaseTest {
       Log.softAssertThat(paymentpage.verifyPayments(), "Navigated successfully to Payments", "Unable to navigate to Payments", driver,
           extentReport , true);
       
-      paymentpage.markTransctionWhenClientFullySettled(dynamicHashMap, driver, extentReport, clientFullySettled);
-         
-      Log.softAssertThat(status,  "Trasaction marked sucessfully",
-          "Unable to mark transaction", driver, extentReport, true);
-
+      paymentpage.markAndPayTransaction(testData,dynamicHashMap.get("docRef"), driver, extentReport, clientFullySettled, CommAdj, false,true);
+     
     } catch (Exception e) {
       Log.exception(e, driver, extentReport);
     }
 
    }
+  
+  /****
+   * To mark and pay client or SA
+   * 
+   * @param quotesData
+   * @param screenshot
+   * @param reference - policy reference or document reference
+   * @param extentReport
+   * @author Sandeep.Sharma*/
+  
+  public void payClientSA(WebDriver driver,String accountCode,HashMap<String, String> dynamicHashMap,HashMap<String, String> testData,
+      ExtentTest extentReport) throws Exception {
+    boolean status = false;
+    try {
+      HomePage homePage = new HomePage(driver, extentReport).get();
+
+      homePage.navigateToPayment(driver, extentReport);
+
+      PaymentScreen paymentpage = new PaymentScreen(driver, extentReport).get();
+      Log.softAssertThat(paymentpage.verifyPaymentSelectAccount(),
+          "Navigated successfully to Payments- Select Account",
+          "Unable to navigate to Payments- Select Account", driver, extentReport, true);
+      paymentpage.searchByCode(accountCode, driver, extentReport);     
+      paymentpage.markAndPayTransaction(testData,dynamicHashMap.get("docRef"), driver, extentReport, true, false, true,false);
+     
+    } catch (Exception e) {
+      Log.exception(e, driver, extentReport);
+    }
+
+   }
+
 }
