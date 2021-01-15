@@ -1,5 +1,6 @@
 package com.ssp.uxp_HeartlandPages;
 
+import java.util.HashMap;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -21,6 +22,7 @@ public class BankReconciliation extends LoadableComponent<BankReconciliation> {
   private ExtentTest extentReport;
   private boolean isPageLoaded;
   
+  
   @FindBy(xpath ="//h1[contains(text(),'Bank Reconciliation')]")
   WebElement headerBankReconciliation;
   
@@ -39,8 +41,16 @@ public class BankReconciliation extends LoadableComponent<BankReconciliation> {
   @FindBy(xpath="//div[@class='bootstrap-dialog-title'][contains(text(),'Bank Reconciliation Report')]")
   WebElement txtBankReconciliationReport;
   
-  @FindBy(css="#ctl00_cntMainBody_btnClose")
+  @FindBy(css="#ctl00_cntMainBody_updButtons #ctl00_cntMainBody_btnClose")
   WebElement btnClose;
+  
+  @FindBy(css="#ctl00_cntMainBody_CollectionItem_BankAccount")
+  WebElement drpBank;
+  
+  @FindBy(css = "iframe[name='TB_iframeContent']")
+  WebElement reportFrame;
+  
+  
   
   public BankReconciliation(WebDriver driver, ExtentTest report) {
     this.driver = driver;
@@ -97,7 +107,7 @@ public class BankReconciliation extends LoadableComponent<BankReconciliation> {
     UIInteraction.click(btnReconcile, "Reconcile button", driver, extentReport, true);
     UIInteraction.click(btnConfirmYes, "Confirm Yes button", driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
-
+    
   }
   
   /****
@@ -123,7 +133,81 @@ public class BankReconciliation extends LoadableComponent<BankReconciliation> {
    */
   public void close(WebDriver driver, ExtentTest extentReport) throws Exception{
     
+   
     UIInteraction.click(btnClose, "Close button", driver, extentReport, false);
+   WaitUtils.waitForSpinner(driver);
+    
+  }
+  
+  /****
+   * Method to select bank from dropdown. 
+   * 
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   */
+  public void selectBank(HashMap<String,String> testData,WebDriver driver, ExtentTest extentReport) throws Exception{
+    
+    System.out.println(testData.get("BankAC").trim());
+    
+    UIInteraction.selectDropdownByVisibleText(drpBank, "select bank",testData.get("BankAC").trim(), driver, extentReport, false);
+    
+    
+  }
+  
+  /****
+   * Method to press FInd button 
+   * 
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   */
+  public void pressFind(WebDriver driver, ExtentTest extentReport) throws Exception{
+    
+    UIInteraction.click(btnFind, "Find button", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+  }
+  
+  /****
+   * Method to press yes of confirmation popup 
+   * 
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   */
+  public void pressYesConfirmation(WebDriver driver, ExtentTest extentReport) throws Exception{
+    
+    UIInteraction.click(btnConfirmYes, "Yes button", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    }
+  
+  /****
+   * Method to press Reconcile button 
+   * 
+   * @param driver
+   * @param extentReport
+   * @throws Exception
+   */
+  public void pressReconcile(WebDriver driver, ExtentTest extentReport) throws Exception{
+    
+    UIInteraction.click(btnReconcile, "Reconcile button", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    }
+  
+  /***
+   * Switching to 'Report' frame
+   * 
+   * @param driver
+   * 
+   */
+  public void switchToReport(WebDriver driver) {
+    driver.switchTo().frame(reportFrame);
+    WaitUtils.waitForSpinner(driver);
+  }
+  
+  public void switchOutOfReport(WebDriver driver, ExtentTest extentReport) throws Exception {
+    driver.switchTo().defaultContent();
+    
   }
   
 }

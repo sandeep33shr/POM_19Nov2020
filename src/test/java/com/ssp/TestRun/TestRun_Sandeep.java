@@ -1,9 +1,8 @@
 package com.ssp.TestRun;
 
-import java.util.HashMap;
 import org.testng.annotations.Test;
 import com.ssp.Heartland.Test.TC_Banking_filtering_Marking;
-import com.ssp.Heartland.Test.TC_IncomeClearing_4644;
+import com.ssp.Heartland.Test.TC_IntractiveDocuments_74984;
 import com.ssp.support.BaseTest;
 
 public class TestRun_Sandeep  extends BaseTest{
@@ -98,6 +97,14 @@ public void test13() throws Exception {
    
 }*/
   
+    @Test(groups="bank")
+  public void test14() throws Exception {
+      
+    new TC_Banking_filtering_Marking().checkBankingEnquiriesAndCTV_US39162(testData, driver, extentReport);
+     
+  }
+  
+ 
 /*    @Test(groups="IncomeClering")
   public void test1() throws Exception {
       
@@ -133,12 +140,18 @@ public void test4() throws Exception {
 new TC_IncomeClearing_4644().NBWithPayNowPartCollection_ClientPays(driver, testData, extentReport);
  
 }*/
-  @Test(groups="IncomeClering")
+/*  @Test(groups="IncomeClering")
 public void test5() throws Exception {
   
 new TC_IncomeClearing_4644().ClientPaysCollection_FullCommPart_PartFee_FullFee(driver, testData, extentReport);
  
-}
+}*/
   
+/*  @Test(groups="Document")
+  public void test1() throws Exception {
+      
+    new TC_IntractiveDocuments_74984().iDoc(driver, testData, extentReport);
+     
+  } */
 
 }

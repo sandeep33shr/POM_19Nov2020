@@ -147,6 +147,11 @@ public class Banking extends BaseTest {
   @FindBy(css = "li.ui-menu-item>a")
   List<WebElement> listSmartSearch;
   
+  @FindBy(css="#lblReportName")
+  WebElement txtBankingReportHeadingReport;
+  
+  
+  
   
   public void selectBank(HashMap<String, String> testdata, WebDriver driver,
       ExtentTest extentReport) {
@@ -208,26 +213,33 @@ public class Banking extends BaseTest {
       e1.printStackTrace();
     }
 
-
   }
   
-  public void assertReportTrigger(WebDriver driver, ExtentTest extentReport) {
-    
-   boolean status=false;
+  public void clickUnmarkAll(WebDriver driver, ExtentTest extentReport) {
     try {
-      UIInteraction.click(btnReport, "Report Button", driver, extentReport, false);
+      if(btnUnmarkAll.getAttribute("disabled") == null){
+      UIInteraction.click(btnUnmarkAll, "UnmarkAll BUtton", driver, extentReport, false);
       WaitUtils.waitForSpinner(driver);
-      UIInteraction.closeCurrentTab(driver);
-      status=verifyBankingTitle(driver, extentReport);
+      }
+     
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    
+  }
+  
+  public void clickBank(WebDriver driver, ExtentTest extentReport) {
+    try {
+      UIInteraction.click(btnBank, "Bank BUtton", driver, extentReport, false);
+      WaitUtils.waitForSpinner(driver);
     } catch (Exception e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
     }
 
-    Log.softAssertThat(status, "Report triggered and closed sucessfully", "Report is not triggered", driver, extentReport, false);
 
   }
-
   public void clickFilterButton(WebDriver driver, ExtentTest extentReport) {
     try {
       UIInteraction.click(btnFilter, "Filter Button", driver, extentReport, false);
@@ -695,8 +707,11 @@ public class Banking extends BaseTest {
     UIInteraction.clickRadioButton(element, "Click SRP", driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
     try {
-      markedTotal = Double.parseDouble(
-          UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, false));
+      String markedAMount=UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, false).replaceAll(",", "");
+      System.out.println(markedAMount);
+      
+      markedTotal = Double.parseDouble(markedAMount);
+      System.out.println(markedTotal);
     } catch (NumberFormatException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -808,7 +823,7 @@ public class Banking extends BaseTest {
 
   }
   
-  public void checkBankingProcess(HashMap<String,String> dynamicHashMap,HashMap<String,String> testData,WebDriver driver, ExtentTest extentReport){
+   public void checkBankingProcess(HashMap<String,String> dynamicHashMap,HashMap<String,String> testData,WebDriver driver, ExtentTest extentReport){
     
     String ref=null;
     List<String> references = new ArrayList<String>() ;
@@ -853,15 +868,15 @@ try {
   
   UIInteraction.clickUsingJS(ele2, "clicking chk2", driver, extentReport, false);
   WaitUtils.waitForSpinner(driver);
-  markedTotal=Double.toString(Double.parseDouble(UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, true)));
   
-  
-  System.out.println(markedTotal);
-  dynamicHashMap.put("markedTotal", markedTotal);
+   markedTotal=UIInteraction.getValue(fldMarkedTotal, "Marked Total", driver, extentReport, true).replaceAll(",", "");
+   dynamicHashMap.put("markedTotal", markedTotal);
   UIInteraction.click(btnBank, "Click Bank", driver, extentReport, false);
   WaitUtils.waitForSpinner(driver);
   CollectionScreen cs= new CollectionScreen(driver, extentReport);
   cs.enterDetailsForPayNow(testData, driver, extentReport, false);
+  
+ verifyBankingCollectionPaymentProcessReport(driver, extentReport);
   
   HomePage homepage = new HomePage(driver, extentReport);
   homepage.navigateToTransaction(driver, extentReport);
@@ -961,6 +976,69 @@ try {
   WaitUtils.waitForSpinner(driver);
       
   }
+  
+  /****
+   * Method to verify Marked Item report is loaded.
+   * @return
+   * @throws Exception
+   *
+   **/
+  public void verifyMarkedItemReport(WebDriver driver, ExtentTest extentReport){
+    String reportTitle =null;
+    btnReport.click();
+       try {
+      UIInteraction.switchToTab(driver);
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    try {
+     reportTitle= UIInteraction.getText(txtBankingReportHeadingReport, "Marked Item", driver, extentReport, true);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    System.out.println(reportTitle);
+    Log.softAssertThat(reportTitle.equalsIgnoreCase("Items Marked for Banking Report"), "Marked Item Report loaded sucessfully", "Marked Item Report is not loaded sucessfully", driver, extentReport, true);
+    try {
+      UIInteraction.closeCurrentTab(driver);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  /****
+   * Method to verify BankingCollectionPaymentProcessReport is loaded.
+   * @return
+   * @throws Exception
+   *
+   **/
+  public void verifyBankingCollectionPaymentProcessReport(WebDriver driver, ExtentTest extentReport){
+    String reportTitle =null;
+      try {
+      UIInteraction.switchToTab(driver);
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    try {
+     reportTitle= UIInteraction.getText(txtBankingReportHeadingReport, "Banking Collection Payment Process Report", driver, extentReport, true);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
+    System.out.println(reportTitle);
+    Log.softAssertThat(reportTitle.equalsIgnoreCase("Banking CollectionPayment Process"), "Banking Collection Payment Process Report loaded sucessfully", "Banking Collection Payment Process Report is not loaded sucessfully", driver, extentReport, true);
+    try {
+      UIInteraction.closeCurrentTab(driver);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+  
 }
 
 

@@ -1,5 +1,6 @@
 package com.ssp.uxp_HeartlandPages;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.openqa.selenium.By;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.openqa.selenium.support.ui.LoadableComponent;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import com.relevantcodes.extentreports.ExtentTest;
+import com.ssp.Heartland.SubModules.NBPaynow;
 import com.ssp.support.Log;
 import com.ssp.utils.ElementLayer;
 import com.ssp.utils.UIInteraction;
@@ -203,22 +205,23 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
       xpath = "//*[@id=\"ctl00_cntMainBody_ctrlClientAccounts_gvClientAccountParent\"]/table/tbody/tr[1]/td[3]")
   WebElement transTypeOnAccountsTable;
 
-  
-  @FindBy (xpath = "//div[@id='ctl00_cntMainBody_ctrlClientAccounts_gvClientAccountParent']//table")
-  public WebElement clientsDetailsTable;
-  
-  public String clientsDetailsTableHeader = "//div[@id='ctl00_cntMainBody_ctrlClientAccounts_gvClientAccountParent']//tr";
 
-  @FindBy (xpath = "#ctl00_cntMainBody_btnCollection")
+  @FindBy(xpath = "//div[@id='ctl00_cntMainBody_ctrlClientAccounts_gvClientAccountParent']//table")
+  public WebElement clientsDetailsTable;
+
+  public String clientsDetailsTableHeader =
+      "//div[@id='ctl00_cntMainBody_ctrlClientAccounts_gvClientAccountParent']//tr";
+
+  @FindBy(xpath = "#ctl00_cntMainBody_btnCollection")
   public WebElement btnCollection;
-  
-  @FindBy (xpath = "//h1[contains(text(),'Account')]")
+
+  @FindBy(xpath = "//h1[contains(text(),'Account')]")
   public WebElement headerAccounts;
 
-  @FindBy (css = "#ctl00_cntMainBody_ClientQuotesPolicies_btnChangeHeader")
+  @FindBy(css = "#ctl00_cntMainBody_ClientQuotesPolicies_btnChangeHeader")
   public WebElement btnChangeHeader;
-  
-  @FindBy (css = "input#ctl00_cntMainBody_POLICYHEADER__POLICYNUMBER")
+
+  @FindBy(css = "input#ctl00_cntMainBody_POLICYHEADER__POLICYNUMBER")
   public WebElement textFieldPolicyNumber;
 
 
@@ -276,12 +279,36 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
 
   @FindBy(css = "#ctl00_SideInfo_ClientInfoCtrl_hypClientDocsBroker")
   WebElement linkDocumentStore;
-  
-  @FindBy(css="#ctl00_cntMainBody_ClientSummaryCntrl_lblAccountBalance")
+
+  @FindBy(css = "#ctl00_cntMainBody_ClientSummaryCntrl_lblAccountBalance")
   WebElement txtAccountBalance;
-  
-  @FindBy(css="select#ctl00_cntMainBody_POLICYHEADER__BRANCH")
+
+  @FindBy(css = "select#ctl00_cntMainBody_POLICYHEADER__BRANCH")
   WebElement dropdownBranch;
+
+  @FindBy(css = "#ctl00_cntMainBody_ctrlLetterWriting_btnLetterWriting")
+  WebElement btnLetterWriting;
+  
+  @FindBy(css = "#ctl00_cntMainBody_ClientQuotesPolicies_ctrlLetterWriting_btnLetterWriting")
+  WebElement btnLetterWritingPolicyLevel;
+
+  @FindBy(css = "#ctl00_cntMainBody_ddlDocumentTemplates")
+  WebElement drpSelectTemplateType;
+
+  @FindBy(css = "#ctl00_cntMainBody_grdDocuments td:nth-child(3)")
+  List<WebElement> clmIntractive;
+
+  @FindBy(css = "#ctl00_cntMainBody_grdDocuments > div > a")
+  List<WebElement> allLinksLetterWriting;
+
+  @FindBy(css = "#ctl00_cntMainBody_btnOk")
+  WebElement btnOKLetterWriting;
+  
+  @FindBy(css = "button[id$='defaultok']")
+  WebElement btnNextInteractiveDocument;
+  
+  @FindBy(css = "#ctl00_cntMainBody_btnCancel")
+  WebElement btnBackLetterWriting;
 
   public ViewClientDetails(WebDriver driver, ExtentTest report) {
     this.driver = driver;
@@ -375,8 +402,8 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
     }
     UIInteraction.selectDropdownByIndex(dropdownBusinessType, "Business Type",
         testdata.get("Business Source"), driver, extentReport, false);
-    UIInteraction.selectDropdownByVisibleText(dropdownBranch, "Branch",
-        testdata.get("Branch"), driver, extentReport, false);
+    UIInteraction.selectDropdownByVisibleText(dropdownBranch, "Branch", testdata.get("Branch"),
+        driver, extentReport, false);
     UIInteraction.clickUsingJS(complianceDetailsTab, "Compliance Tab", driver, extentReport, true);
     UIInteraction.selectDropdownByVisibleText(dropdownCustomerCatrogry, "Customer Category",
         testdata.get("CustomerCategory"), driver, extentReport, false);
@@ -666,9 +693,10 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
     dynamicHashMap.put("beforeDate", previousDate);
 
   }
-  
+
   /*****
    * Method to perform click on change button
+   * 
    * @param driver
    * @throws Exception
    */
@@ -1061,61 +1089,64 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
   }
 
 
-    /***
-     * This method is used to get a column data from a table
-     * @param tableRowsLocator
-     * @param columnOneName
-     * @param columnOneValue
-     * @param columnTwoName
-     * @param expectedValue
-     * @param driver
-     * @param extentReport
-     * @return
-     * @throws Exception
-     * @author Bhavesh.KumarSingh
-     */
-    public String validateClientDetailsTableData(String tableRowsLocator, String columnOneName, String columnOneValue, String columnTwoName, String expectedValue,
-        WebDriver driver, ExtentTest extentReport) throws Exception {
-      return Interactions.getTableDataIncludesHiddenRows(tableRowsLocator, columnOneName, columnOneValue, columnTwoName, expectedValue, driver, extentReport);
-    }
-    
-    /****
-     * 
-     * Navigate to policy header screen from Quote/Policy tab
-     * 
-     * @param extentReport
-     * @author Bhavesh.KumarSingh
-     */
-    public void clickOnChangeHeader(WebDriver driver) throws Exception {
+  /***
+   * This method is used to get a column data from a table
+   * 
+   * @param tableRowsLocator
+   * @param columnOneName
+   * @param columnOneValue
+   * @param columnTwoName
+   * @param expectedValue
+   * @param driver
+   * @param extentReport
+   * @return
+   * @throws Exception
+   * @author Bhavesh.KumarSingh
+   */
+  public String validateClientDetailsTableData(String tableRowsLocator, String columnOneName,
+      String columnOneValue, String columnTwoName, String expectedValue, WebDriver driver,
+      ExtentTest extentReport) throws Exception {
+    return Interactions.getTableDataIncludesHiddenRows(tableRowsLocator, columnOneName,
+        columnOneValue, columnTwoName, expectedValue, driver, extentReport);
+  }
 
-      UIInteraction.click(btnChangeHeader, "Change header button", driver, extentReport, false);
-    }
-    
-    /****
-     * 
-     * @param return
-     * @throws Exception
-     * @author Bhavesh.KumarSingh
-     */
-    
-    public boolean verifyPolicyHeaderTab(WebDriver driver) throws Exception {
-      if (!WaitUtils.waitForElement(driver, policyHeaderTab))
-        throw new Exception("Policy header tab in View Client Details not loaded");
-      return true;
-    }
-   
-    /****
-     * 
-     * Navigate to Policies tab
-     * 
-     * @param extentReport
-     * @author Bhavesh.KumarSingh
-     */
-    
-    public void clickOnSaveBtn(WebDriver driver, ExtentTest extentReport) throws Exception {
+  /****
+   * 
+   * Navigate to policy header screen from Quote/Policy tab
+   * 
+   * @param extentReport
+   * @author Bhavesh.KumarSingh
+   */
+  public void clickOnChangeHeader(WebDriver driver) throws Exception {
 
-      UIInteraction.click(btnSave, "Save button", driver, extentReport, false);
-    }
+    UIInteraction.click(btnChangeHeader, "Change header button", driver, extentReport, false);
+  }
+
+  /****
+   * 
+   * @param return
+   * @throws Exception
+   * @author Bhavesh.KumarSingh
+   */
+
+  public boolean verifyPolicyHeaderTab(WebDriver driver) throws Exception {
+    if (!WaitUtils.waitForElement(driver, policyHeaderTab))
+      throw new Exception("Policy header tab in View Client Details not loaded");
+    return true;
+  }
+
+  /****
+   * 
+   * Navigate to Policies tab
+   * 
+   * @param extentReport
+   * @author Bhavesh.KumarSingh
+   */
+
+  public void clickOnSaveBtn(WebDriver driver, ExtentTest extentReport) throws Exception {
+
+    UIInteraction.click(btnSave, "Save button", driver, extentReport, false);
+  }
 
 
   /****
@@ -1274,8 +1305,10 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
     Thread.sleep(2000);
 
   }
+
   /****
    * Method to navigate to quotes tab
+   * 
    * @param driver
    * @param extentReport
    * @throws Exception
@@ -1296,7 +1329,84 @@ public class ViewClientDetails extends LoadableComponent<ViewClientDetails> {
    * @author Shweta.Saigal
    */
   public String getAccountBalance(WebDriver driver, ExtentTest extentReport) throws Exception {
-    
+
     return UIInteraction.getText(txtAccountBalance, "Account Balance", driver, extentReport, true);
+  }
+
+  /****
+   * 
+   * Method to click Letter Writing
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+  public void clickLetterWriting(WebDriver driver, ExtentTest extentReport) throws Exception {
+
+    UIInteraction.click(btnLetterWriting, "Letter Writing", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    driver.switchTo().frame(frameTB);
+  }
+
+  /****
+   * 
+   * Method to click Generate Intractive Document
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+  public void generateIntractiveDocument(WebDriver driver, ExtentTest extentReport)
+      throws Exception {
+
+    UIInteraction.selectDropdownByVisibleText(drpSelectTemplateType, "Document Template",
+        "Document Templates", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+
+    String selectButtonPath =
+        "//table//td[contains(text(),'".concat("Yes").concat("')]/following-sibling::td//input[@type='submit']");
+    System.out.println(selectButtonPath);
+    WebElement selectButton = driver.findElement(By.xpath(selectButtonPath));
+     UIInteraction.click(selectButton, "Clicking", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);    
+    UIInteraction.click(btnOKLetterWriting, "click OK", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    int totalTabs=driver.getWindowHandles().size();
+    Log.softAssertThat(totalTabs>1, "Intractive document opens in new tab", "Interactive document doesn't open in new tab", driver, extentReport, false);
+    UIInteraction.switchToTab(driver);
+    WaitUtils.waitForSpinner(driver);
+    while(driver.getWindowHandles().size()>1){
+    UIInteraction.click(btnNextInteractiveDocument, "click Next", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    }
+       
+    Log.softAssertThat(driver.getWindowHandles().size()==1, "Intractive document closes automatically on pressing Next", "Interactive document doesn't closes automatically on pressing Next", driver, extentReport, false);
+    List<String> newTab = new ArrayList<>(driver.getWindowHandles());     
+    driver.switchTo().window(newTab.get(0));
+    driver.switchTo().frame(frameTB);
+    UIInteraction.click(btnBackLetterWriting, "click Back button", driver, extentReport, false);
+    
+    NBPaynow nb = new NBPaynow();
+    nb.createNewBusiness(driver, dynamicHashMap, extentReport, false, false);
+    clickLetterWriting(driver, extentReport);
+    UIInteraction.selectDropdownByVisibleText(drpSelectTemplateType, "Document Template",
+        "Document Templates", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    WebElement selectButton1 = driver.findElement(By.xpath(selectButtonPath));
+     UIInteraction.click(selectButton1, "Clicking", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);    
+    UIInteraction.click(btnOKLetterWriting, "click OK", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    int totalTabs1=driver.getWindowHandles().size();
+    Log.softAssertThat(totalTabs1>1, "Intractive document opens in new tab", "Interactive document doesn't open in new tab", driver, extentReport, false);
+    UIInteraction.switchToTab(driver);
+    WaitUtils.waitForSpinner(driver);
+    while(driver.getWindowHandles().size()>1){
+    UIInteraction.click(btnNextInteractiveDocument, "click Next", driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    }
+       
+    Log.softAssertThat(driver.getWindowHandles().size()==1, "Intractive document closes automatically on pressing Next", "Interactive document doesn't closes automatically on pressing Next", driver, extentReport, false);
+    
   }
 }

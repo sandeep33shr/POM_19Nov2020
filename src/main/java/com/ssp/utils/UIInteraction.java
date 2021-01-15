@@ -5,6 +5,7 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.openqa.selenium.Alert;
@@ -16,6 +17,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -30,10 +32,11 @@ import com.ssp.support.Log;
  * @author Shweta.Saigal
  *
  */
+
+
 public class UIInteraction {
-
-
-  /***
+  
+   /***
    * To enter text
    * 
    * @param element
@@ -1089,6 +1092,16 @@ public class UIInteraction {
     
   }
   
+  /****
+   * 
+   * To select value from autoSuggesstion list
+   * 
+   * @param reference 
+   * @param driver
+   * @param extentReport
+   * @param screenshot
+   * author Sandeep.Sharma
+   */
   public static void selectValAutoSuggestionList(WebElement FieldSmartSearch, List<WebElement> suggestionList,String enterTxt,String tobeSelectedTxt,WebDriver driver, ExtentTest extentReport){
     
       
@@ -1109,10 +1122,53 @@ public class UIInteraction {
         break;
       }
     }
+      
+  }
+  /****
+   * 
+   * To click view hyperlink based on reference
+   * 
+   * @param reference 
+   * @param driver
+   * @param extentReport
+   * @param screenshot
+   * author Sandeep.Sharma
+   */
+  public static void openCTVBasedOnReference(String reference,WebDriver driver, ExtentTest extentReport){
     
+    String viewLink= "//td[contains(text(),'".concat(reference).concat("')]/following-sibling::td/a");
+    System.out.println(viewLink);
+    WebElement view = driver.findElement(By.xpath(viewLink));
+     try {
+     UIInteraction.clickUsingJS(view, "Clicking", driver, extentReport, false);
+     WaitUtils.waitForSpinner(driver);
+   } catch (Exception e) {
+     // TODO Auto-generated catch block
+     e.printStackTrace();
+   }
     
   }
+  
+  /*****
+   * Method to check not availability of element
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
 
+  public static void checkUnavailabilityOfElement(String element,List<WebElement> allElements,WebDriver driver, ExtentTest extentReport) {
 
-}
+    boolean status=false;
+    for(WebElement ele: allElements){
+      if(ele.getText().equalsIgnoreCase(element)){
+        status=false;
+      }else status=true;
+           
+    }
+    Log.softAssertThat(status, "Element "+ element+" is not present",  "Element "+ element+" is present", driver, extentReport, true);
+  }
+  
+
+  }
 

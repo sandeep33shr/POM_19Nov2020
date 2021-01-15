@@ -211,6 +211,12 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
   @FindBy(xpath = "//*[@id='ctl00_cntMainBody_gvCredits']/table/tbody/tr/td[2]")
   WebElement transactionSRPNo;
+  
+  @FindBy(css = "#ctl00_cntMainBody_gvDebit td:nth-child(1)")
+  WebElement transactionDebitNo;
+  
+  @FindBy(css = "#ctl00_cntMainBody_gvCredits td:nth-child(1)")
+  WebElement transactionCreditNo;
 
   @FindBy(css = "#ctl00_cntMainBody_btnClose")
   WebElement btnViewScreenClose;
@@ -228,16 +234,34 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
   WebElement lnkCTVCommission;
 
   @FindBy(css = "#ctl00_cntMainBody_gvDebit td:nth-child(1)")
-  List<WebElement> debitSectionTRef;
+  List<WebElement> debitSectionTRefWHenUndoCHeckboxesNotDisplayed;
 
   @FindBy(css = "#ctl00_cntMainBody_gvCredits td:nth-child(1)")
-  List<WebElement> creditSectionTRef;
+  List<WebElement> creditSectionTRefWHenUndoCHeckboxesNotDisplayed;
+  
+  @FindBy(css = "#ctl00_cntMainBody_gvDebit td:nth-child(2)")
+  WebElement debitSectionTRef;
 
   @FindBy(css = "a#ctl00_cntMainBody_confirmYNC1_btnYes")
   WebElement btnYesFundingWarning;
 
   @FindBy(xpath = "/html/body/form/div[3]/div/div[1]/div/div/div[4]/a[1]")
   WebElement btnYesReversalWarning;
+  
+  @FindBy(css = "#ctl00_cntMainBody_txtReconciledDate")
+  WebElement txtReconciledDate;
+  
+  @FindBy(css = "#ctl00_cntMainBody_txtBankingDate")
+  WebElement txtBankingDate;
+  
+  @FindBy(css = "a#ctl00_cntMainBody_hLinkAmountAllocated")
+  WebElement lnkAmtAllocated;
+  
+  @FindBy(css = "#ctl00_cntMainBody_tabdetails label")
+  List<WebElement> allLabelsDetailsTabCTV;
+  
+  @FindBy(css = "#ctl00_cntMainBody_lblBankingDate")
+  WebElement lblBankingDate;
   
   public TransactionScreen(WebDriver driver, ExtentTest report) {
 
@@ -464,7 +488,12 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
         break;
       case "Details":
         UIInteraction.click(tabDetails, "Details Tab", driver, extentReport, false);
-        break;
+        if (label.equalsIgnoreCase("Reconciled Date"))
+          value = UIInteraction.getValue(txtReconciledDate, "Reconciled Date", driver, extentReport, true); 
+        if (label.equalsIgnoreCase("Banking Date"))
+          value = UIInteraction.getValue(txtBankingDate, "Banking Date", driver, extentReport, true);
+               
+        break; 
 
       case "Income":
         UIInteraction.click(tabIncome, "Income tab", driver, extentReport, false);
@@ -1037,6 +1066,34 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
         extentReport, true);
     return transactionNo;
   }
+  
+  /***
+   * This method is used to get debit transaction reference no on view allocation when undo check boxes are not available
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+  public String getTransactionDebitTransReffNo(WebDriver driver, ExtentTest extentReport)
+      throws Exception {
+    String transactionNo = UIInteraction.getText(transactionDebitNo, "Debit transaction no", driver,
+        extentReport, true);
+    return transactionNo;
+  }
+  
+  /***
+   * This method is used to get Credit transaction reference no on view allocation when undo check boxes are not available
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+  public String getTransactionCreditTransReffNoWhenUnDOCheckboxesNotAvailable(WebDriver driver, ExtentTest extentReport)
+      throws Exception {
+    String transactionNo = UIInteraction.getText(transactionCreditNo, "Credit transaction no", driver,
+        extentReport, true);
+    return transactionNo;
+  }
 
   /***
    * To switch out from frame
@@ -1074,7 +1131,7 @@ public class TransactionScreen extends LoadableComponent<TransactionScreen> {
 
 
   /****
-   * Method to get transaction reference
+   * Method to get transaction reference from Search Transaction screen
    * 
    * @param reference
    * @param driver
@@ -1533,7 +1590,7 @@ Log.softAssertThat(status, "Earned Fee has been reverted and toclear fee has bee
   }
 
   /*****
-   * Method to get transaction from view allocation screen based on allocated amount
+   * Method to get transaction from view allocation screen based on allocated transactions for Banking-US specific method
    * 
    * @amount based on this amount transaction ref will be returned
    * @param driver
@@ -1553,7 +1610,8 @@ Log.softAssertThat(status, "Earned Fee has been reverted and toclear fee has bee
 
 
     if (markedAmount > 0) {
-      for (WebElement ele : debitSectionTRef) {
+      for (WebElement ele : debitSectionTRefWHenUndoCHeckboxesNotDisplayed) {
+        System.out.println(ele.getText());
         if (!ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref1"))
             && !ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref2"))) {
           ref = ele.getText();
@@ -1562,7 +1620,8 @@ Log.softAssertThat(status, "Earned Fee has been reverted and toclear fee has bee
 
     } else {
 
-      for (WebElement ele : creditSectionTRef) {
+      for (WebElement ele : creditSectionTRefWHenUndoCHeckboxesNotDisplayed) {
+        System.out.println(ele.getText());
         if (!ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref1"))
             && !ele.getText().equalsIgnoreCase(dynamicHashMap.get("ref2"))) {
           ref = ele.getText();
@@ -1574,7 +1633,7 @@ Log.softAssertThat(status, "Earned Fee has been reverted and toclear fee has bee
     return ref;
   }
 
-
+  
   /*****
    * Method to clear search and preform new search
    * 
@@ -1618,5 +1677,42 @@ Log.softAssertThat(status, "Earned Fee has been reverted and toclear fee has bee
         "Transaction is not posted in account -> " + account, driver, extentReport, true);
 
   }
+  /*****
+   * Method to click Amt. Allocatd hyperlink of CTV screen
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+
+  public void clickAmountAllocatedLink(WebDriver driver, ExtentTest extentReport) {
+
+    try {
+      UIInteraction.click(lnkAmtAllocated, "click AmtAllocated link", driver, extentReport, false);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    WaitUtils.waitForSpinner(driver);
+  }
+  
+  /*****
+   * Method to check not availability of Banking Date on CTV Details tab
+   * 
+   * @param driver
+   * @param extentReport
+   * @author Sandeep.Sharma
+   */
+
+ public void checkUnavailabilityOfBankingDateOnCTV(WebDriver driver, ExtentTest extentReport){
+     
+   try {
+    UIInteraction.click(tabDetails, "Details tab", driver, extentReport, false);
+  } catch (Exception e) {
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+   UIInteraction.checkUnavailabilityOfElement("Banking Date", allLabelsDetailsTabCTV, driver, extentReport);
+ }
 
 }

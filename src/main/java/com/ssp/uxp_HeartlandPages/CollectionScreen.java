@@ -408,6 +408,7 @@ public class CollectionScreen extends LoadableComponent<CollectionScreen> {
     UIInteraction.selectDropdownByVisibleText(dropdownMediaType, "Media Type",
         testdata.get("Media Type"), driver, extentReport, false);
     WaitUtils.waitForSpinner(driver);
+    
     UIInteraction.selectDropdownByVisibleText(dropdownBankAccount, "Bank Account",
         testdata.get("Bank"), driver, extentReport, true);
     if (partCollection == true) {
@@ -426,6 +427,28 @@ public class CollectionScreen extends LoadableComponent<CollectionScreen> {
           false);
     }
 
+    UIInteraction.click(btnOk, "Ok Button", driver, extentReport, true);
+    WaitUtils.waitForSpinner(driver);
+  }
+  
+  /****
+   * 
+   * To populate details on collection Payments during Banking Process
+   * 
+   * @param testdata
+   * 
+   * @param screenshot
+   * @param extentReport
+   * @throws Exception
+   * @author Sandeep.Sharma
+   */
+  public void enterCollectionPaymentDetailsForBanking(HashMap<String, String> testdata, WebDriver driver,
+      ExtentTest extentReport) throws Exception {
+    UIInteraction.selectDropdownByVisibleText(dropdownMediaType, "Media Type",
+        testdata.get("Media Type"), driver, extentReport, false);
+    WaitUtils.waitForSpinner(driver);
+    UIInteraction.selectDropdownByVisibleText(dropdownBankAccount, "Bank Account",
+        testdata.get("BankAC"), driver, extentReport, true);
     UIInteraction.click(btnOk, "Ok Button", driver, extentReport, true);
     WaitUtils.waitForSpinner(driver);
   }

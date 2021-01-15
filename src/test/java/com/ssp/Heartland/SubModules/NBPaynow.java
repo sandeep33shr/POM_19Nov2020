@@ -9,6 +9,7 @@ import com.ssp.support.BaseTest;
 import com.ssp.support.EmailReport;
 import com.ssp.support.Log;
 import com.ssp.utils.DataUtils;
+import com.ssp.utils.UIInteraction;
 import com.ssp.uxp_HeartlandPages.CollectionScreen;
 import com.ssp.uxp_HeartlandPages.NewQuoteScreens;
 import com.ssp.uxp_HeartlandPages.PremiumDisplay;
@@ -67,9 +68,12 @@ public class NBPaynow extends BaseTest {
                  premiumPage.confirmQuote(driver, extentReport);
                  CollectionScreen collecton = new CollectionScreen(driver, extentReport);
                  collecton.enterDetailsForPayNow(testData, driver, extentReport, partCollection);
+                 UIInteraction.acceptAlert(driver);
+                 driver.switchTo().defaultContent();                 
                  Log.softAssertThat(premiumPage.verifyTransactionPage(),
                      "Transaction Confirmation Page successfully loaded",
-                     "Transaction Confirmation Page not loaded", driver, extentReport, true);
+                     "Transaction Confirmation Page not loaded", driver, extentReport, true);                
+                 
                  String policyNo = premiumPage.storePolicyRef(driver, extentReport);
                  dynamicHashMap.put("policyNo", policyNo);
                  premiumPage.clickYesDocuments(driver, extentReport);

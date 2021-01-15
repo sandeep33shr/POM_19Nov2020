@@ -227,7 +227,7 @@ public class NewQuoteScreens extends LoadableComponent<NewQuoteScreens> {
   WebElement buttonAddAddon2;
   
   @FindBy(
-      css = "#C1__BUT_21896C493B7E4484403075_R5")
+      css = "#C1__BUT_21896C493B7E4484403075_R1")
   WebElement buttonAddKeyCare;
 
   // Broker Fee section

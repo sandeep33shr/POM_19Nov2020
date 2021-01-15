@@ -6,7 +6,7 @@
 
 	<parameter name="device" value="Laptop"></parameter>
 
-	<parameter name="env" value="Dev2"></parameter>
+	<parameter name="env" value="ide"></parameter>
 
 	<test name="Heartland Sanity Pack" parallel="none">
 
